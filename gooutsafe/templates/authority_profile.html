@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %} Authority Profile {% endblock %}
+
+{% block content %}
+
+        <ul class="nav justify-content-end">
+            <li class="nav-item">
+                <a class="btn btn-outline-dark"
+                    href="{{ url_for('auth.logout')}}">
+                    Logout
+                </a>
+            </li>
+        </ul>
+        </nav>
+        <br>
+
+        <h5>Hi {{current_user.name}} </h5>> <br>
+
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-authority" role="tabpanel"
+                 aria-labelledby="pills-authority-tab">
+                
+                <form action="{{ url_for('authority.search_customer') }}"
+                    method="POST">
+                    {{ form.hidden_tag() }}
+                    {{ form.track_type.label }}
+                    {{ form.track_type }}
+                    {{ form.customer_ident.label }}
+                    {{ form.customer_ident }}
+                    <input type=submit class="btn btn-sm btn-primary text-right" value="Search">
+                </form>
+                {% if search_customer != None %}
+                    <h3>Searched customer</h3>
+                    <form action="{{ url_for('authority.mark_positive', customer_id=search_customer.id) }}" method="POST">
+                        {{ search_customer.firstname }} {{ search_customer.lastname }} -- SSN: {{ search_customer.social_number }} | email: {{ search_customer.email }} | phone: {{ search_customer.phone }}
+                        <input type=submit class="btn btn-sm btn-primary text-right" value="Mark as positive">
+                    </form>
+                {% endif %}
+                {% if pos_customers != None %}
+                <br>
+                    <h3>List of positive customers</h3>
+                    {% for customer in pos_customers %}
+                        <div>
+                            <ul>
+                                <form action="{{ url_for('authority.contact_tracing', contact_id=customer.id ) }}"
+                                     method="GET">
+                                    <li>{{ customer.firstname }} {{ customer.lastname }} -- SSN: {{ customer.social_number }} 
+                                        | email: {{ customer.email }} | phone: {{ customer.phone }} 
+                                        
+                                        <button class="btn btn-sm btn-primary text-right" type="submit">Check contacts</button>
+                                    </li>
+                                </form>
+                            </ul>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+{% endblock %}
+
+
+{% block footer %}
+{% endblock %}

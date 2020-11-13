@@ -1,0 +1,27 @@
+{% extends "components/navbar/base_navbar.html" %}
+
+{% block navbar_profile_links %}
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="/"></a>
+        <ul class="nav justify-content-end">
+            <li class="nav-item">
+                {% if current_user.type == "operator" %}
+                    <a class="btn btn-outline-primary"
+                        href="{{ url_for('auth.operator',id=current_user.id ) }}">
+                        Profile
+                    </a>
+                {% elif current_user.type == "customer" %}
+                    <a class="btn btn-outline-primary"
+                        href="{{ url_for('auth.profile',id=current_user.id ) }}">
+                        Profile
+                    </a>
+                {% elif current_user.type == "authority" %}
+                    <a class="btn btn-outline-primary"
+                        href="{{ url_for('auth.authority',id=current_user.id, positive_id=0 ) }}">
+                        Profile
+                    </a>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+{% endblock %}

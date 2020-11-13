@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %} Notifications {% endblock %}
+
+{% block content %}
+
+    <h2>Notifications</h2>        
+    <ul>
+        {% for notification in notifications %}
+            <li>
+                {% if notification['is_future'] %}
+                    [{{ notification['timestamp'] }}]: One of the customers that booked in your restaurant for {{ notification['contagion_datetime'] }} has resulted positive to Covid-19. 
+                    You can contact him at {{ notification['customer_phone_number'] }}.
+                {% else %}
+                    [{{ notification['timestamp'] }}]: One of the customers that ate in your restaurant at {{ notification['contagion_datetime'] }} has resulted positive to Covid-19. 
+                    Take all the needed precautionary measures.
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+                

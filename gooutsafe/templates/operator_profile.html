@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %} Operator Profile {% endblock %}
+{% block content %}
+    {% if current_user.is_authenticated %}
+        <ul class="nav justify-content-end">
+            <li class="nav-item">
+                <!-- Modal -->
+                <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
+                     aria-labelledby="deleteModal" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModal">Are you sure??</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                If you delete your account, <br>
+                                everything will be lost!
+                                Even you restaurant, be careful.
+                            </div>
+
+                            <div class="modal-footer">
+                                <a type="button" data-dismiss="modal">
+                                    Close
+                                </a>
+                                <a href="{{ url_for('users.delete_user',id_=current_user.id ) }}">
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Hi {{ current_user.firstname }}!</h1>
+            </div>
+        </div>
+        <div class="row" style="margin-top:50px">
+            <div class="col-md-12">
+                <div class="float-left">
+                    <p class="lead">Your data</p>
+                    <table class="table table-condensed">
+                        <tr>
+                            <th>Email</th>
+                            <td>{{ current_user.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Restaurant Registered</th>
+                            {% if restaurant == None %}
+                                <td class="text-warning">No</td>
+                            {% else %}
+                                <td class="text-success">Yes</td>
+                            {% endif %}
+                        </tr>
+                    </table>
+                </div>
+                <div class="float-right">
+                    <p class="lead">Operations</p>
+                    <div class="btn-group-vertical btn-group-lg">
+                        <a class="btn btn-primary"
+                           href="{{ url_for('users.update_user', id=current_user.id) }}">
+                            Edit Info
+                        </a>
+                        {% if restaurant == None %}
+                            <a class="btn btn-success"
+                               href="{{ url_for('restaurants.add', id_op=current_user.id) }}">
+                                Add your restaurant
+                            </a>
+                        {% else %}
+                            <a class="btn btn-warning"
+                               href="{{ url_for('restaurants.edit_restaurant',
+                        id_op=current_user.id, rest_id=restaurant.id) }}">
+                                Edit Restaurant
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row" style="margin-top:50px">
+            <div class="col-md-12">
+                <h2 class="text-danger">Danger zone</h2>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-danger" data-toggle="modal"
+                            data-target="#deleteModal">
+                        Delete account
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+{% block footer %}
+{% endblock %}

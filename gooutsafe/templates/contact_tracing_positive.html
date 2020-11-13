@@ -1,0 +1,43 @@
+
+{% extends "base.html" %}
+
+{% block title %} Authority Profile {% endblock %}
+
+{% block content %}
+
+    {% if current_user.is_authenticated %}
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <a class="btn btn-outline-dark"
+                        onclick="location.href='/logout'">Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <br>
+
+        <h5>Hi {{current_user.name}} </h5>> <br>
+        <h3>Positive Customer</h3>
+                    <div>
+                        <il>{{ customer.firstname }} {{ customer.lastname }} -- SSN: {{ customer.social_number }} | email: {{ customer.email }} | phone: {{ customer.phone }}</il>
+                    </div>
+                    <br>
+        <h3>Contacts of the positive customer</h3>
+        {% if pos_contact|length != 0 %}
+            {% for i in range(pos_contact|length) %}
+                <div>
+                    <ul>
+                        <li>
+                            {{ pos_contact[i].firstname }} {{ pos_contact[i].lastname }} -- SSN: {{ pos_contact[i].social_number }} | email: {{ pos_contact[i].email }} | phone: {{ pos_contact[i].phone }} -- Restaurant: {{res_contact[i]}} -- Date: {{date_contact[i]}}
+                        </li>
+                    </ul>
+                </div>  
+            {% endfor %}
+        {% else %}
+                No contacts!
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

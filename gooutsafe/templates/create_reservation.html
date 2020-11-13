@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% from 'bootstrap/wtf.html' import form_field %}
+{% block title %} Add a Reservation {% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="float-left">
+                <h1 class="display-5">You are booking a table</h1>
+            </div>
+            <div class="float-right">
+                <h1 class="text-primary display-5">{{ restaurant.name }}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p class="lead">Fill the following form to obtain a reservation</p>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <form action="" method="POST">
+                {{ form.hidden_tag() }}
+                {% for field in form.display %}
+                    {{ form_field(form[field]) }}
+                {% endfor %}
+                <input type=submit value="Book" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}
+{% endblock %}

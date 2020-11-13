@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% from 'bootstrap/wtf.html' import  form_field %}
+{% block title %} Your reservations {% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="float-left">
+                <h1 class="display-6">Reservation Management</h1>
+            </div>
+            <div class="float-right">
+                <h1 class="display-5 text-primary">{{ restaurant.name }}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p class="lead">In this page you can <strong>manage</strong> the reservations of your restaurant.
+                <br/>
+                Please be comply with <i>COVID-19</i> rules.</p>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-md-8">
+            <form action="{{ url_for('reservation.reservation_all', restaurant_id=restaurant.id ) }}"
+                  method="POST">
+                {{ filter_form.hidden_tag() }}
+                {% for field in filter_form.display %}
+                    {{ form_field(filter_form[field], form_type='horizontal') }}
+                {% endfor %}
+                <input type=submit value="Search" class="btn btn-primary">
+            </form>
+        </div>
+        <div class="col-md-4">
+            <h4>Total People <span class="badge badge-secondary">{{ people }}</span></h4>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Table #ID</th>
+                    <th>People N&deg;</th>
+                    <th>Schedule</th>
+                    <th>Customer</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for r in reservations %}
+                    <tr>
+                        <td>
+                            {{ r.table_id }}
+                        </td>
+                        <td>{{ r.people_number }}</td>
+                        <td>{{ r.start_time }} -- {{ r.end_time }}</td>
+                        <td>
+                            {{r.user.lastname}}
+                        </td>
+                        <td>
+                            {% if r.is_confirmed%}
+                                <a type="button" class="btn btn-light disable">
+                                Confirm
+                                </a>
+                            {% else %}
+                                <a type="button" class="btn btn-light active"
+                                href="{{ url_for('reservation.confirm_reservation', res_id=r.id ) }}">
+                                Confirm
+                            </a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-danger active" data-toggle="modal"
+                                    data-target="#deleteReservation">
+                                Delete
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="deleteReservation" tabindex="-1"
+                                 aria-labelledby="deleteReservation" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">
+                                                Are you sure??
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Do you want to delete this reservation?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal"> Close
+                                            </button>
+
+                                            <a type="button" class="btn btn-danger"
+                                               href="{{ url_for('reservation.delete_reservation', id=r.id,
+                              restaurant_id=restaurant.id) }}">
+                                                Delete
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}
+{% endblock %}

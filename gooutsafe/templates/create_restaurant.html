@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% from 'bootstrap/wtf.html' import form_field %}
+
+{% block title %} Add Restaurant {% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="h1">Create your restaurant</h1>
+            <p class="text-justify">In this page you can create your restaurant. Please fill the form to be online.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <form action="" method="POST">
+                {{ form.hidden_tag() }}
+                {% for field in form.display %}
+                    {{ form_field(form[field]) }}
+                {% endfor %}
+                <input type=submit value="Create" class="btn btn-primary">
+            </form>
+        </div>
+        <div class="col-md-4">
+            <p class="lead text-center">You will be online as soon as possible</p>
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}
+{% endblock %}

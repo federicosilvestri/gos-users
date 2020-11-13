@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %} Customer Profile {% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="display-4">Your reservations</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-condensed">
+                {% for r in reservations %}
+                    <tr>
+                        <td>
+                            {% for rest in restaurants %}
+                                {% if rest.id == r.restaurant_id %}
+                                    Restaurant: {{ rest.name }}, {{ rest.address }} <br>
+                                {% endif %}
+                            {% endfor %}
+                            People: {{ r.people_number }} <br>
+                            Start time: {{ r.start_time }} -- End time: {{ r.end_time }}
+                        </td>
+
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-warning" data-toggle="modal"
+                                        data-target="#editReservation">
+                                    Edit
+                                </button>
+                                <button type="button" class="btn btn-danger" data-toggle="modal"
+                                        data-target="#deleteReservation">
+                                    Delete
+                                </button>
+                            </div>
+
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="editReservation" tabindex="-1"
+                                 aria-labelledby="editReservation" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="label">
+                                                What do you want to change?
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+
+                                            <form action="{{ url_for('reservation.edit_reservation',reservation_id=r.id, customer_id=r.user_id ) }}"
+                                                  method="POST">
+                                                {{ form.hidden_tag() }}
+                                                <dl>
+                                                    {% for field in form.display %}
+                                                        <dt>{{ form[field].label }}</dt>
+                                                        <dd>{{ form[field]() }}</dd>
+
+                                                        {% if form[field].errors %}
+                                                            {% for e in form[field].errors %}
+                                                                <p class="help-block">{{ e }}</p>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </dl>
+                                                <p>
+                                                    <input type=submit value="Save changes">
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    </td>
+
+
+                    <!-- Button trigger modal -->
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="deleteReservation" tabindex="-1"
+                         aria-labelledby="deleteReservation" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="label">
+                                        Are you sure??
+                                    </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Do you want to delete this reservation?
+                                </div>
+                                <div class="modal-footer">
+                                    <a type="button" class="btn btn-secondary"
+                                       data-dismiss="modal">
+                                        Close
+                                    </a>
+
+                                    <a href="{{ url_for('reservation.delete_reservation_customer',id=r.id, customer_id=r.user_id ) }}">
+                                        Delete
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </tr>
+                {% endfor %}
+        </table>
+    </div>
+    </div>
+{% endblock %}
+{% block footer %}
+{% endblock %}

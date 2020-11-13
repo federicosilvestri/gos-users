@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% from 'bootstrap/wtf.html' import form_field %}
+
+{% block title %} Sign up {% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="display-4">Sign up</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <form action="" method="POST">
+                {{ form.hidden_tag() }}
+
+                {% for field in form.display %}
+                    {{ form_field(form[field]) }}
+                {% endfor %}
+                <input type=submit value="Signup" class="btn btn-primary">
+            </form>
+        </div>
+        <div class="col-md-4">
+            {% if user_type == 'customer' %}
+                <p class="lead">Are you a restaurant operator? <a
+                        href="{{ url_for('users.create_user_type', type_='operator') }}">Switch the form</a></p>
+            {% else %}
+                <p class="lead">Are you a simple customer? <a
+                        href="{{ url_for('users.create_user_type', type_='customer') }}">Switch the form</a></p>
+            {% endif %}
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

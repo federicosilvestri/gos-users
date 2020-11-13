@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %} Home {% endblock %}
+{% block content %}
+    <div class="jumbotron">
+        <h1 class="display-4">GoOutSafe</h1>
+        <p class="lead">
+            GoOutSafe is a restaurant booking web application that provides the 
+            possibility to track Covid-19 positives and their contacts, to prevent
+            the spreding of the virus.
+        </p>
+        <hr class="my-4">
+
+        <p>
+            <h5> A bit hungry? Let's search for some restaurants. </h5>
+        <br>
+        <p class="lead">
+            <a class="btn btn-primary btn-lg" href="{{ url_for('home.search') }}" 
+                role="button">
+                See the map!
+            </a>
+        </p>
+    </div>
+{% endblock %}
+{% block footer %}
+{% endblock %}

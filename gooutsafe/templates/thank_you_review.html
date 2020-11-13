@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %} Thank you! {% endblock %}
+
+{% block content %}
+    <div class="row" style="margin-top:50px">
+        <div class="col-md-12">
+            {% if already_written is defined %}
+                <div class="alert alert-warning" role="alert">
+                    You have already written a review, thank you!
+                </div>
+            {% else %}
+                <div class="alert alert-success" role="alert">
+                    Review is now added! Thank you for your time!
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="float-right">
+                <a href="{{ url_for('restaurants.restaurant_sheet', restaurant_id=restaurant_id) }}">Go back</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

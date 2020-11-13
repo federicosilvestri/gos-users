@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %} Write a review {% endblock %}
+{% block head %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="row" style="margin-top: 50px;">
+        <h3>Write the review</h3>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <form action="" method="POST">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    <label for="value">Score</label>
+                    <div class="d-flex justify-content-center my-4">
+                        <span class="font-weight-bold purple-text mr-2 mt-1">{{ rating_min_value }}</span>
+
+                        <input type="range" class="custom-range" min="{{ rating_min_value }}" step="1"
+                               max="{{ rating_max_value }}" id="restaurantRangeValue"
+                               name="value"
+                               aria-describedby="A value that describes the quality of restaurant" required>
+                        <span class="font-weight-bold purple-text ml-2 mt-1">{{ rating_max_value }}</span>
+                    </div>
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label for="reviewText">Review</label>
+                    <textarea class="form-control" id="reviewText" name="review" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block footer %}
+{% endblock %}

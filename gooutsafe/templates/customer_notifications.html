@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %} Notifications {% endblock %}
+
+{% block content %}
+
+    <h2>Notifications</h2>
+    <ul>
+        {% for notification in notifications %}
+            <li>
+                [{{ notification['timestamp'] }}] You have been in contact with a positive person in {{ notification['contagion_datetime'] }}, at {{ notification['contagion_restaurant_name'] }}.
+                Take all the precautionary measures you can and apply for a Covid-19 test as soon as you can.
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+                
