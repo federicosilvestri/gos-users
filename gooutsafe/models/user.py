@@ -63,7 +63,7 @@ class User(UserMixin, db.Model):
             payload = {
                 "iss": JWT_ISSUER,
                 "iat": datetime.datetime.utcnow(),
-                "exp": datetime.datetime.utcnow() + JWT_LIFETIME_SECONDS,
+                "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=JWT_LIFETIME_SECONDS),                
                 "sub": str(user_id),
             }
             return jwt.encode(
@@ -72,6 +72,7 @@ class User(UserMixin, db.Model):
                 algorithm=JWT_ALGORITHM
             )
         except Exception as e:
+            print (e)
             return e
 
     @staticmethod
