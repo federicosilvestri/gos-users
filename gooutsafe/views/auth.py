@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, flash, url_for, jsonify, make_response
+from flask import Blueprint, render_template, request, redirect, flash, url_for, jsonify, make_response
 from flask_login import (logout_user, login_user, login_required)
 
 from flask_login import current_user
@@ -8,6 +8,7 @@ from gooutsafe.dao.user_manager import UserManager
 from gooutsafe.forms import LoginForm
 from gooutsafe.forms.authority import AuthorityForm
 from gooutsafe.forms.update_customer import AddSocialNumberForm
+from werkzeug.security import generate_password_hash, check_password_hash
 
 auth = Blueprint('auth', __name__)
 
@@ -23,19 +24,21 @@ def login(re=False):
     Returns:
         Redirects the view to the personal page of the user
     """
-    form = LoginForm()
-    if form.is_submitted():
-        email, password = form.data['email'], form.data['password']
+    if request.method == "POST":
+        post_data = request.get_json()
+        email = post_data.get('email')
+            
         try:
             user = UserManager.retrieve_by_email(email)
-            auth_token = user.encode_auth_token(user.id)
-            if auth_token:
-                responseObject = {
-                    'status': 'success',
-                    'message': 'Successfully logged in.',
-                    'auth_token': auth_token.decode()
-                }
-                return make_response(jsonify(responseObject)), 200
+            if user and check_password_hash(user.password, post_data.get('password')):
+                auth_token = user.encode_auth_token(user.id)
+                if auth_token:
+                    responseObject = {
+                        'status': 'success',
+                        'message': 'Successfully logged in.',
+                        'auth_token': auth_token.decode()
+                    }
+                    return make_response(jsonify(responseObject)), 200
 
         except Exception as e:
             print(e)
@@ -45,20 +48,10 @@ def login(re=False):
             }
             return make_response(jsonify(responseObject)), 500
 
-        """if user is None:
-            flash('The user does not exist!')
-        elif user.authenticate(password) is True:
-            login_user(user)
-            if user.type == 'operator':
-                return redirect('/operator/%d' % user.id)
-            elif user.type == 'customer':
-                return redirect('/profile/%d' % user.id)
-            else:
-                return redirect('/authority/%d/0' % user.id)
-        else:
-            flash('Invalid password')"""
-
-    return render_template('login.html', form=form, re_login=re)
+        return jsonify({'post': 'ok'})
+    else:
+        return jsonify({'get': 'ok'})
+    #return render_template('login.html', re_login=re)
 
 
 @auth.route('/relogin')
@@ -93,25 +86,6 @@ def profile(id):
     return redirect(url_for('home.index'))
 
 
-@auth.route('/my_profile')
-@login_required
-def my_profile():
-    """This method allows the customer to see its personal page
-
-    Returns:
-        Redirects the view to personal page of the customer
-    """
-    reservations = ReservationManager.retrieve_by_customer_id(current_user.id)
-    form = ReservationForm()
-    social_form = AddSocialNumberForm()
-    customer = CustomerManager.retrieve_by_id(current_user.id)
-    restaurants = RestaurantManager.retrieve_all()
-
-    return render_template('customer_profile.html', customer=customer,
-                           reservations=reservations, restaurants=restaurants, 
-                           form=form, social_form=social_form)
-
-
 @auth.route('/operator/<int:id>', methods=['GET', 'POST'])
 @login_required
 def operator(id):
@@ -130,21 +104,6 @@ def operator(id):
                                restaurant=restaurant, filter_form=filter_form)
 
     return redirect(url_for('home.index'))
-
-
-@auth.route('/my_operator')
-@login_required
-def my_operator():
-    """This method allows the operator to access the page of its personal info
-
-    Returns:
-        Redirects the view to personal page of the operator
-    """
-    filter_form = FilterForm()
-    restaurant = Restaurant.query.filter_by(owner_id=current_user.id).first()
-    return render_template('operator_profile.html',
-                           restaurant=restaurant, filter_form=filter_form
-                           )
 
 
 @auth.route('/authority/<int:id>/<int:positive_id>', methods=['GET', 'POST'])

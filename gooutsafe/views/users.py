@@ -6,6 +6,7 @@ from gooutsafe.forms import UserForm, LoginForm
 from gooutsafe.forms.update_customer import UpdateCustomerForm, AddSocialNumberForm
 from gooutsafe.models.customer import Customer
 from gooutsafe.models.operator import Operator
+from werkzeug.security import generate_password_hash, check_password_hash
 
 users = Blueprint('users', __name__)
 
@@ -56,18 +57,6 @@ def create_user_type(type_):
                 }
                 return make_response(jsonify(responseObject)), 401
 
-            """form.populate_obj(user)
-            user.set_password(form.password.data)
-
-            UserManager.create_user(user)
-
-            login_user(user)
-            user.authenticated = True
-
-            if user.type == 'operator':
-                return redirect(url_for('auth.operator', id=user.id))
-            else:
-                return redirect(url_for('auth.profile', id=user.id))"""
         else:
             for fieldName, errorMessages in form.errors.items():
                 for errorMessage in errorMessages:
