@@ -2,6 +2,13 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from gooutsafe import db
+import jwt
+import datetime
+
+JWT_ISSUER = 'com.zalando.connexion'
+JWT_ALGORITHM = 'HS256'
+JWT_LIFETIME_SECONDS = 600
+JWT_SECRET = 'change_this'
 
 
 class User(UserMixin, db.Model):
@@ -46,3 +53,37 @@ class User(UserMixin, db.Model):
 
     def is_customer(self):
         return self.type == 'customer'
+
+    def encode_auth_token(self, user_id):
+        """
+        Generates the Auth Token
+        :return: string
+        """
+        try:
+            payload = {
+                "iss": JWT_ISSUER,
+                "iat": datetime.datetime.utcnow(),
+                "exp": datetime.datetime.utcnow() + JWT_LIFETIME_SECONDS,
+                "sub": str(user_id),
+            }
+            return jwt.encode(
+                payload,
+                JWT_SECRET,
+                algorithm=JWT_ALGORITHM
+            )
+        except Exception as e:
+            return e
+
+    @staticmethod
+    def decode_auth_token(auth_token):
+        """
+        Decodes the auth token
+        :param auth_token:
+        :return: integer|string
+        """
+        try:
+            return jwt.decode(auth_token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        except jwt.ExpiredSignatureError:
+            return 'Signature expired. Please log in again.'
+        except jwt.InvalidTokenError:
+            return 'Invalid token. Please log in again.'

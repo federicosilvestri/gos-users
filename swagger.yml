@@ -1,0 +1,30 @@
+openapi: 3.0.1
+info:
+  title: Users Service API
+  description: Users from GoOutSafe with Microservices
+  version: "0.1"
+
+servers:
+- url: /
+
+paths:
+  /login:
+    post:
+      tags:
+        - Users
+      summary: Logs in the users
+      operationId: auth.login
+      requestBody:
+        description: Users' data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:      
+      responses:
+        200:
+          description: Login success
+          content: {}
+        default:
+          description: Error in the login url
+          content: {}

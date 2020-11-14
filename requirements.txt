@@ -65,3 +65,4 @@ WTForms==2.3.3
 timeago==1.0.14
 dnspython==2.0.0
 email-validator==1.1.1
+pyjwt==1.4.2

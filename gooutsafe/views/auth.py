@@ -1,19 +1,13 @@
-from flask import Blueprint, render_template, redirect, flash, url_for
+from flask import Blueprint, render_template, redirect, flash, url_for, jsonify, make_response
 from flask_login import (logout_user, login_user, login_required)
 
 from flask_login import current_user
 from gooutsafe.dao.customer_manager import CustomerManager
 from gooutsafe.dao.health_authority_manager import AuthorityManager
-from gooutsafe.dao.reservation_manager import ReservationManager
-from gooutsafe.dao.restaurant_manager import RestaurantManager
 from gooutsafe.dao.user_manager import UserManager
-from gooutsafe.dao.notification_manager import NotificationManager
 from gooutsafe.forms import LoginForm
 from gooutsafe.forms.authority import AuthorityForm
-from gooutsafe.forms.filter_form import FilterForm
-from gooutsafe.forms.reservation import ReservationForm
 from gooutsafe.forms.update_customer import AddSocialNumberForm
-from gooutsafe.models.restaurant import Restaurant
 
 auth = Blueprint('auth', __name__)
 
@@ -32,8 +26,26 @@ def login(re=False):
     form = LoginForm()
     if form.is_submitted():
         email, password = form.data['email'], form.data['password']
-        user = UserManager.retrieve_by_email(email)
-        if user is None:
+        try:
+            user = UserManager.retrieve_by_email(email)
+            auth_token = user.encode_auth_token(user.id)
+            if auth_token:
+                responseObject = {
+                    'status': 'success',
+                    'message': 'Successfully logged in.',
+                    'auth_token': auth_token.decode()
+                }
+                return make_response(jsonify(responseObject)), 200
+
+        except Exception as e:
+            print(e)
+            responseObject = {
+                'status': 'fail',
+                'message': 'Try again'
+            }
+            return make_response(jsonify(responseObject)), 500
+
+        """if user is None:
             flash('The user does not exist!')
         elif user.authenticate(password) is True:
             login_user(user)
@@ -44,7 +56,7 @@ def login(re=False):
             else:
                 return redirect('/authority/%d/0' % user.id)
         else:
-            flash('Invalid password')
+            flash('Invalid password')"""
 
     return render_template('login.html', form=form, re_login=re)
 

@@ -2,9 +2,6 @@ from datetime import datetime, timedelta
 
 from gooutsafe import celery
 from gooutsafe.dao.customer_manager import CustomerManager
-from gooutsafe.dao.notification_manager import NotificationManager
-from gooutsafe.dao.reservation_manager import ReservationManager
-from gooutsafe.models.notification import Notification
 
 
 def schedule_revert_customer_health_status(customer_id, eta=None):

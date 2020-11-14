@@ -1,7 +1,6 @@
-from flask import Blueprint, redirect, render_template, request, url_for, flash
+from flask import Blueprint, redirect, render_template, request, url_for, flash, make_response, jsonify
 from flask_login import (login_user, login_required, current_user)
 
-from gooutsafe.dao.restaurant_manager import RestaurantManager
 from gooutsafe.dao.user_manager import UserManager
 from gooutsafe.forms import UserForm, LoginForm
 from gooutsafe.forms.update_customer import UpdateCustomerForm, AddSocialNumberForm
@@ -37,7 +36,27 @@ def create_user_type(type_):
                 flash("Data already present in the database.")
                 return render_template('create_user.html', form=form)
 
-            form.populate_obj(user)
+            try:
+                form.populate_obj(user)
+                user.set_password(form.password.data)
+                UserManager.create_user(user)
+
+                auth_token = user.encode_auth_token(user.id)
+                responseObject = {
+                    'status': 'success',
+                    'message': 'Successfully registered.',
+                    'auth_token': auth_token.decode()
+                }
+                return make_response(jsonify(responseObject)), 201
+
+            except Exception as e:
+                responseObject = {
+                    'status': 'fail',
+                    'message': 'Some error occurred. Please try again.'
+                }
+                return make_response(jsonify(responseObject)), 401
+
+            """form.populate_obj(user)
             user.set_password(form.password.data)
 
             UserManager.create_user(user)
@@ -48,7 +67,7 @@ def create_user_type(type_):
             if user.type == 'operator':
                 return redirect(url_for('auth.operator', id=user.id))
             else:
-                return redirect(url_for('auth.profile', id=user.id))
+                return redirect(url_for('auth.profile', id=user.id))"""
         else:
             for fieldName, errorMessages in form.errors.items():
                 for errorMessage in errorMessages:

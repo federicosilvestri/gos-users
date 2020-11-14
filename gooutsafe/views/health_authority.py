@@ -2,8 +2,6 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 
 from gooutsafe.dao.customer_manager import CustomerManager
-from gooutsafe.dao.reservation_manager import ReservationManager
-from gooutsafe.dao.restaurant_manager import RestaurantManager
 from gooutsafe.forms.authority import AuthorityForm
 from gooutsafe.tasks.health_authority_tasks import (
     notify_restaurant_owners_about_positive_booked_customer,
