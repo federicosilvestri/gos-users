@@ -57,7 +57,7 @@ def create_app():
 
     register_extensions(app)
     register_blueprints(app)
-    register_handlers(app)
+    #register_handlers(app)
 
     # loading login manager
     import gooutsafe.auth as auth

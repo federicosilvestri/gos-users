@@ -10,8 +10,6 @@ class TestOperator(ModelTest):
 
         from gooutsafe.models import operator
         cls.operator = operator
-        from tests.models import test_restaurant
-        cls.test_restaurant = test_restaurant.TestRestaurant
 
     def test_cust_init(self):
         for i in range(0, 10):
@@ -54,9 +52,3 @@ class TestOperator(ModelTest):
                             is_anonymous=is_anonymous
                             )
         return operator, (email, password, is_active, is_admin, is_anonymous)
-
-    def test_set_restaurant(self):
-        operator, _ = self.generate_random_operator()
-        restaurant,_ = self.test_restaurant.generate_random_restaurant()
-        operator.set_restaurant(restaurant)
-        self.test_restaurant.assertEqualRestaurants(operator.restaurant, restaurant)
