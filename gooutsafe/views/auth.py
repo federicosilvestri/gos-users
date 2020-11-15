@@ -30,7 +30,7 @@ def login(re=False):
         
         try:
             user = UserManager.retrieve_by_email(email)
-            if user: #and check_password_hash(user.password, post_data.get('password')):
+            if user and check_password_hash(user.password, post_data.get('password')):
                 auth_token = user.encode_auth_token(user.id)
                 if auth_token:
                     responseObject = {
@@ -50,10 +50,6 @@ def login(re=False):
             }
             return jsonify(responseObject), 500
 
-        return jsonify({'post': 'ok'})
-    else:
-        return jsonify({'get': 'ok'})
-
 
 @auth.route('/relogin')
 def re_login():
@@ -63,28 +59,7 @@ def re_login():
     return login(re=True)
 
 
-@auth.route('/operator/<int:id>', methods=['GET', 'POST'])
-@login_required
-def operator(id):
-    """This method allows the operator to access the page of its personal info
-
-    Args:
-        id (int): univocal identifier of the operator
-
-    Returns:
-        Redirects the view to personal page of the operator
-    """
-    if current_user.id == id:
-        filter_form = FilterForm()
-        restaurant = Restaurant.query.filter_by(owner_id=id).first()
-        return render_template('operator_profile.html',
-                               restaurant=restaurant, filter_form=filter_form)
-
-    return redirect(url_for('home.index'))
-
-
 @auth.route('/authority/<int:id>/<int:positive_id>', methods=['GET', 'POST'])
-@login_required
 def authority(id, positive_id):
     """This method allows the Health Authority to see its personal page.
 
@@ -95,6 +70,7 @@ def authority(id, positive_id):
     Returns:
         Redirects to the page of the Health Authority
     """
+    """
     if current_user.id == id:
         authority = AuthorityManager.retrieve_by_id(id)
         ha_form = AuthorityForm()
@@ -102,7 +78,7 @@ def authority(id, positive_id):
         search_customer = CustomerManager.retrieve_by_id(positive_id)
         return render_template('authority_profile.html', current_user=authority,
                                form=ha_form, pos_customers=pos_customers, 
-                               search_customer=search_customer)
+                               search_customer=search_customer)"""
     return redirect(url_for('home.index'))
 
 

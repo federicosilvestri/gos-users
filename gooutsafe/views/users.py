@@ -7,6 +7,7 @@ from gooutsafe.forms.update_customer import UpdateCustomerForm, AddSocialNumberF
 from gooutsafe.models.customer import Customer
 from gooutsafe.models.operator import Operator
 from werkzeug.security import generate_password_hash, check_password_hash
+import datetime
 
 users = Blueprint('users', __name__)
 
@@ -22,47 +23,50 @@ def create_user_type(type_):
     Returns:
         Redirects the user into his profile page, once he's logged in
     """
-    form = LoginForm()
-    if type_ == "customer":
-        form = UserForm()
-        user = Customer()
-    else:
-        user = Operator()
 
     if request.method == 'POST':
-        if form.validate_on_submit():
-            email = form.data['email']
-            searched_user = UserManager.retrieve_by_email(email)
-            if searched_user is not None:
-                flash("Data already present in the database.")
-                return render_template('create_user.html', form=form)
+        post_data = request.get_json()
+        user_type = post_data.get('type')
+        email = post_data.get('email')
+        password = post_data.get('password')
 
-            try:
-                form.populate_obj(user)
-                user.set_password(form.password.data)
-                UserManager.create_user(user)
+        searched_user = UserManager.retrieve_by_email(email)
+        if searched_user is not None:
+            return jsonify ({'status': 'Already present'})
 
-                auth_token = user.encode_auth_token(user.id)
-                responseObject = {
-                    'status': 'success',
-                    'message': 'Successfully registered.',
-                    'auth_token': auth_token.decode()
-                }
-                return make_response(jsonify(responseObject)), 201
+        if user_type == "customer":
+            user = Customer()
+            birthday = datetime.datetime.strptime(post_data.get('birthdate'), 
+                '%m/%d/%Y')
 
-            except Exception as e:
-                responseObject = {
-                    'status': 'fail',
-                    'message': 'Some error occurred. Please try again.'
-                }
-                return make_response(jsonify(responseObject)), 401
-
+            user.set_firstname(post_data.get('firstname'))
+            user.set_lastname(post_data.get('lastname'))
+            user.set_birthday(birthday)
+            user.set_phone(post_data.get('phone'))
         else:
-            for fieldName, errorMessages in form.errors.items():
-                for errorMessage in errorMessages:
-                    flash('The field %s is incorrect: %s' % (fieldName, errorMessage))
+            user = Operator()
 
-    return render_template('create_user.html', form=form, user_type=type_)
+        user.set_email(email)
+        user.set_password(password)
+        UserManager.create_user(user)
+        try:
+            auth_token = user.encode_auth_token(user.id)
+            responseObject = {
+                'type': user.type,
+                'id': user.id,
+                'status': 'success',
+                'message': 'Successfully registered.',
+                'auth_token': auth_token.decode()
+            }
+            return jsonify(responseObject), 201
+
+        except Exception as e:
+            print(e)
+            responseObject = {
+                'status': 'fail',
+                'message': 'Some error occurred. Please try again.'
+            }
+            return jsonify(responseObject), 401
 
 
 @users.route('/delete_user/<int:id_>', methods=['GET', 'POST'])
