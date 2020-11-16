@@ -93,27 +93,6 @@ In order to know what are the lines of codes which are not covered by the tests,
 
 `python -m pytest --cov-report term-missing`
 
-## Celery
-
-In order to set up Celery, you need to open two other terminals, using the same development virtual environment. You setup both Redis, the message broker, and the Celery scheduler in the first one, while starting the Celery worker in the other one.
-(Note: Redis can be set up in either one of the new terminals, there is no need to put it in the same one of the scheduler).
-
-Execute the following command to download and run the docker container with Redis in the background:
-
-`docker run --name=redis-devel --publish=6379:6379 --hostname=redis --restart=on-failure --detach redis:latest`
-
-If the Redis docker has already been downloaded and created, run the following command instead :
-
-`docker run -p 127.0.0.1:6379:6379/tcp redis`
-
-Execute the following command to run the Celery scheduler:
-
-`celery -A app.celery beat --loglevel=INFO`
-
-Execute the following command to run the Celery worker:
-
-`celery -A app.celery worker --loglevel=INFO`
-
 ## Conventions
 
 - Name of files must be snake_cased

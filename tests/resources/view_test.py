@@ -4,7 +4,7 @@ import unittest
 class ViewTest(unittest.TestCase):
     """
     This class should be implemented by
-    all classes that tests views
+    all classes that tests resources
     """
     client = None
 
@@ -28,7 +28,7 @@ class ViewTest(unittest.TestCase):
 
     def login_test_customer(self):
         """
-        Simulate the customer login for testing the views with @login_required
+        Simulate the customer login for testing the resources with @login_required
         :return: customer
         """
         customer, _ = self.test_customer.generate_random_customer()
@@ -41,7 +41,7 @@ class ViewTest(unittest.TestCase):
 
     def login_test_operator(self):
         """
-        Simulate the operator login for testing the views with @login_required
+        Simulate the operator login for testing the resources with @login_required
         :return: operator
         """
         operator, _ = self.test_operator.generate_random_operator()
@@ -54,7 +54,7 @@ class ViewTest(unittest.TestCase):
 
     def login_test_authority(self):
         """
-        Simulate the authority login for testing the views with @login_required
+        Simulate the authority login for testing the resources with @login_required
         :return: authority
         """
         authority, _ = self.test_authority.generate_random_authority()

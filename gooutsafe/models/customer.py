@@ -1,17 +1,15 @@
 from datetime import datetime
 
-from sqlalchemy.orm import relationship
-
 from gooutsafe import db
 from .user import User
 
 
 class Customer(User):
-    SOCIAL_CODE_LENGTH = 16
-
     __tablename__ = 'Customer'
 
     MAX_PHONE_LEN = 25
+    SOCIAL_CODE_LENGTH = 16
+    SERIALIZE_LIST = ['firstname', 'lastname', 'birthdate', 'social_number', 'health_status', 'phone']
 
     id = db.Column(db.Integer, db.ForeignKey('User.id', ondelete="CASCADE"), primary_key=True)
     firstname = db.Column(db.Unicode(128))
@@ -63,5 +61,8 @@ class Customer(User):
     def set_last_notification_read_time(self, read_time):
         self.last_notification_read_time = read_time
 
-    def new_notifications(self):
-        return 0
+    def serialize(self):
+        p_ser = super(Customer, self).serialize()
+        c_ser = dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
+
+        return dict(c_ser, **p_ser)

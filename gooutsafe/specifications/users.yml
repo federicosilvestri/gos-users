@@ -1,0 +1,95 @@
+openapi: 3.0.1
+info:
+  title: Users Service API
+  description: Users from GoOutSafe with Microservices
+  version: "0.1"
+
+servers:
+  - url: /
+
+paths:
+  /customer:
+    post:
+      summary: Add a new customer
+      tags:
+        - Users
+      operationId: gooutsafe.resources.users.create_customer
+      requestBody:
+        description: Create a new customer inside microservice app
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        201:
+          description: Created
+        200:
+          description: User already exists
+        default:
+          description: Error during creation of the user
+
+  /user/{user_id}:
+    get:
+      tags: [User]
+      description: Get a customer by its id
+      operationId: gooutsafe.resources.users.get_user
+      parameters:
+        - name: user_id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Return user
+        404:
+          description: User not found
+        default:
+          description: An error occured during retrieving the user
+
+
+components:
+  schemas:
+    Customer:
+      required:
+        - firstname
+        - lastname
+        - email
+        - birthdate
+      type: object
+      properties:
+        firstname:
+          type: string
+          description: First name of customer
+          example: Mario
+        lastname:
+          type: string
+          description: Last name of customer
+          example: Rossi
+        email:
+          type: string
+          description: Customer email
+          example: mario.rossi@example.org
+          format: email
+        birthdate:
+          type: string
+          description: Customer birthdate
+          example: '2020-01-01'
+          format: date
+        phone:
+          type: string
+          description: Customer phone number
+          example: '+39 3332222384'
+          minLength: 10
+          maxLength: 25
+        password:
+          type: string
+          description: Customer password
+          example: 'abcd1234'
+          minLength: 5
+          maxLength: 127
+
+

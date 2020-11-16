@@ -1,9 +1,6 @@
 import os
 
-from celery import Celery
-from flask import Flask
-from flask_bootstrap import Bootstrap
-from flask_datepicker import datepicker
+import connexion
 from flask_environments import Environments
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -12,9 +9,9 @@ __version__ = '0.1'
 
 db = None
 migrate = None
-login = None
 debug_toolbar = None
-celery = None
+app = None
+api_app = None
 
 
 def create_app():
@@ -25,10 +22,16 @@ def create_app():
     global db
     global app
     global migrate
-    global login
-    global celery
+    global api_app
 
-    app = Flask(__name__, instance_relative_config=True)
+    api_app = connexion.FlaskApp(
+        __name__,
+        server='flask',
+        specification_dir='openapi/',
+    )
+    
+    # getting the flask app
+    app = api_app.app
 
     flask_env = os.getenv('FLASK_ENV', 'None')
     if flask_env == 'development':
@@ -50,18 +53,8 @@ def create_app():
         app=app
     )
 
-    # creating celery
-    celery = make_celery(app)
-
     # requiring the list of models
-
-    register_extensions(app)
-    register_blueprints(app)
-    #register_handlers(app)
-
-    # loading login manager
-    import gooutsafe.auth as auth
-    login = auth.init_login_manager(app)
+    import gooutsafe.models
 
     # creating migrate
     migrate = Migrate(
@@ -77,86 +70,47 @@ def create_app():
     if flask_env == 'testing' or flask_env == 'development':
         register_test_blueprints(app)
 
+    # registering to api app all specifications
+    register_specifications(api_app)
+
     return app
 
 
-def register_extensions(app):
+def register_specifications(_api_app):
     """
-    It register all extensions
-    :param app: Flask Application Object
+    This function registers all resources in the flask application
+    :param _api_app: Flask Application Object
     :return: None
     """
-    global debug_toolbar
 
-    if app.debug:
-        try:
-            from flask_debugtoolbar import DebugToolbarExtension
-            debug_toolbar = DebugToolbarExtension(app)
-        except ImportError:
-            pass
-
-    # adding bootstrap and date picker
-    Bootstrap(app)
-    datepicker(app)
+    # we need to scan the specifications package and add all yaml files.
+    from importlib_resources import files
+    folder = files('gooutsafe.specifications')
+    for _, _, files in os.walk(folder):
+        for file in files:
+            if file.endswith('.yaml') or file.endswith('.yml'):
+                file_path = folder.joinpath(file);
+                _api_app.add_api(file_path)
 
 
-def register_blueprints(app):
-    """
-    This function registers all views in the flask application
-    :param app: Flask Application Object
-    :return: None
-    """
-    from gooutsafe.views import blueprints
-    for bp in blueprints:
-        app.register_blueprint(bp, url_prefix='/')
-
-
-def register_test_blueprints(app):
+def register_test_blueprints(_app):
     """
     This function registers the blueprints used only for testing purposes
-    :param app: Flask Application Object
+    :param _app: Flask Application Object
     :return: None
     """
 
-    from gooutsafe.views.utils import utils
-    app.register_blueprint(utils)
+    from gooutsafe.resources.utils import utils
+    _app.register_blueprint(utils)
 
 
-def make_celery(app):
-    """
-    This function create celery instance.
-
-    :param app: Application Object
-    :return: Celery instance
-    """
-    redis_host = os.getenv('REDIS_HOST', 'localhost')
-    redis_port = os.getenv('REDIS_PORT', 6379)
-
-    backend = broker = 'redis://%s:%d' % (redis_host, redis_port)
-
-    _celery = Celery(
-        app.name,
-        broker=broker,
-        backend=backend
-    )
-    _celery.conf.timezone = 'Europe/Rome'
-    _celery.conf.update(app.config)
-
-    class ContextTask(_celery.Task):
-        def __call__(self, *args, **kwargs):
-            with app.app_context():
-                return self.run(*args, **kwargs)
-
-    return _celery
-
-
-def register_handlers(app):
+def register_handlers(_app):
     """
     This function registers all handlers to application
-    :param app: application object
+    :param _app: application object
     :return: None
     """
     from .handlers import page_404, error_500
 
-    app.register_error_handler(404, page_404)
-    app.register_error_handler(500, error_500)
+    _app.register_error_handler(404, page_404)
+    _app.register_error_handler(500, error_500)

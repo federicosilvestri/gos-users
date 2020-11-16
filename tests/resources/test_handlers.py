@@ -1,4 +1,4 @@
-from tests.views.view_test import ViewTest
+from tests.resources.view_test import ViewTest
 from faker import Faker
 
 

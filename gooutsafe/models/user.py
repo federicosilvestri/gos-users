@@ -13,6 +13,9 @@ JWT_SECRET = 'change_this'
 
 class User(UserMixin, db.Model):
     __tablename__ = 'User'
+
+    SERIALIZE_LIST = ['id', 'email', 'type']
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.Unicode(128), nullable=False, unique=True)
     password = db.Column(db.Unicode(128))
@@ -32,7 +35,7 @@ class User(UserMixin, db.Model):
         self.authenticated = False
 
     def set_password(self, password):
-        self.password = password
+        self.password = generate_password_hash(password)
 
     def set_email(self, email):
         self.email = email
@@ -63,7 +66,7 @@ class User(UserMixin, db.Model):
             payload = {
                 "iss": JWT_ISSUER,
                 "iat": datetime.datetime.utcnow(),
-                "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=JWT_LIFETIME_SECONDS),                
+                "exp": datetime.datetime.utcnow() + datetime.timedelta(seconds=JWT_LIFETIME_SECONDS),
                 "sub": str(user_id),
             }
             return jwt.encode(
@@ -72,7 +75,6 @@ class User(UserMixin, db.Model):
                 algorithm=JWT_ALGORITHM
             )
         except Exception as e:
-            print (e)
             return e
 
     @staticmethod
@@ -88,3 +90,6 @@ class User(UserMixin, db.Model):
             return 'Signature expired. Please log in again.'
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
+
+    def serialize(self):
+        return dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
