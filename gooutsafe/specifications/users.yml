@@ -50,7 +50,6 @@ paths:
         default:
           description: Error during creation of the user
 
-
   /user/{user_id}:
     get:
       tags: [User]
