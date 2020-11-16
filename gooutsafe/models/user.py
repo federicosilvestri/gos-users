@@ -14,7 +14,7 @@ JWT_SECRET = 'change_this'
 class User(UserMixin, db.Model):
     __tablename__ = 'User'
 
-    SERIALIZE_LIST = ['id', 'email', 'type']
+    SERIALIZE_LIST = ['id', 'email', 'is_active', 'authenticated', 'is_anonymous', 'type']
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.Unicode(128), nullable=False, unique=True)
