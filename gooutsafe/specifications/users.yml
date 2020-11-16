@@ -29,6 +29,28 @@ paths:
         default:
           description: Error during creation of the user
 
+  /operator:
+    post:
+      summary: Add a new operator
+      tags:
+        - Users
+      operationId: gooutsafe.resources.users.create_operator
+      requestBody:
+        description: Create a new operator inside microservice app
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Operator'
+      responses:
+        201:
+          description: Created
+        200:
+          description: User already exists
+        default:
+          description: Error during creation of the user
+
+
   /user/{user_id}:
     get:
       tags: [User]
@@ -121,5 +143,14 @@ components:
           example: 'abcd1234'
           minLength: 5
           maxLength: 127
-
-
+    
+    Operator:
+      required:
+        - email
+      type: object
+      properties:
+        email:
+          type: string
+          description: Customer email
+          example: mario.rossi@example.org
+          format: email

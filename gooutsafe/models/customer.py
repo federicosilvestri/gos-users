@@ -9,7 +9,7 @@ class Customer(User):
 
     MAX_PHONE_LEN = 25
     SOCIAL_CODE_LENGTH = 16
-    SERIALIZE_LIST = ['firstname', 'lastname', 'birthdate', 'social_number', 'health_status', 'phone']
+    LIST = ['firstname', 'lastname', 'birthdate', 'social_number', 'health_status', 'phone']
 
     id = db.Column(db.Integer, db.ForeignKey('User.id', ondelete="CASCADE"), primary_key=True)
     firstname = db.Column(db.Unicode(128))
@@ -26,6 +26,7 @@ class Customer(User):
 
     def __init__(self, *args, **kw):
         super(Customer, self).__init__(*args, **kw)
+        self.LIST = self.SERIALIZE_LIST + self.LIST
         self._authenticated = False
 
     @staticmethod
@@ -62,7 +63,8 @@ class Customer(User):
         self.last_notification_read_time = read_time
 
     def serialize(self):
-        p_ser = super(Customer, self).serialize()
-        c_ser = dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
-
-        return dict(c_ser, **p_ser)
+        #p_ser = super(Customer, self).serialize()
+        c_ser = dict([(k, self.__getattribute__(k)) for k in self.LIST])
+        #return dict(c_ser, **p_ser)
+        print (c_ser)
+        return c_ser

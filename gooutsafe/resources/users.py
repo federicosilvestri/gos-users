@@ -9,14 +9,7 @@ import datetime
 def create_customer():
     """This method allows the creation of a new customer
 
-    Args:
-        user_type (string): as a parameter takes a string that defines the
-        type of the new user
-
-    Returns:
-        Redirects the user into his profile page, once he's logged in
     """
-
     post_data = request.get_json()
     email = post_data.get('email')
     password = post_data.get('password')
@@ -30,17 +23,42 @@ def create_customer():
     user = Customer()
     birthday = datetime.datetime.strptime(post_data.get('birthdate'),
                                           '%Y-%m-%d')
+    user.set_email(email)
+    user.set_password(password)
     user.set_firstname(post_data.get('firstname'))
     user.set_lastname(post_data.get('lastname'))
     user.set_birthday(birthday)
     user.set_phone(post_data.get('phone'))
+    UserManager.create_user(user)
+
+    response_object = {
+        'user': user.serialize(),
+        'status': 'success',
+        'message': 'Successfully registered',
+    }
+
+    return jsonify(response_object), 201
+
+def create_operator():
+    """ This method allows the creation of a new operator
+    """
+    post_data = request.get_json()
+    email = post_data.get('email')
+    password = post_data.get('password')
+
+    searched_user = UserManager.retrieve_by_email(email)
+    if searched_user is not None:
+        return jsonify({
+            'status': 'Already present'
+        }), 200
+
+    user = Operator()
     user.set_email(email)
     user.set_password(password)
     UserManager.create_user(user)
 
     response_object = {
-        'type': user.type,
-        'id': user.id,
+        'user': user.serialize(),
         'status': 'success',
         'message': 'Successfully registered',
     }
