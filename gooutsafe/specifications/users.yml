@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: "3.0.1"
 info:
   title: Users Service API
   description: Users from GoOutSafe with Microservices
@@ -50,6 +50,36 @@ paths:
         default:
           description: An error occured during retrieving the user
 
+  /authenticate:
+    post:
+      summary: Authenticate a user
+      tags: [ Users ]
+      operationId: gooutsafe.resources.auth.authenticate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: auth
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.org
+                password:
+                  type: string
+                  example: abcd123A
+      responses:
+        200:
+          description: User credentials are correct
+        400:
+          description: User credentials are not correct
+        default:
+          description: An error occured during login
 
 components:
   schemas:

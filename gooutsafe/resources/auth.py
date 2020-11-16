@@ -1,17 +1,14 @@
 from gooutsafe.dao.user_manager import UserManager
 
 
-def authenticate(email, password):
-    """Allows the user to log into the system
-
-    Args:
-        the user's session is new or needs to be reloaded. Defaults to False.
-
-    Returns:
-        Returns the response to microservice
+def authenticate(auth):
     """
-    user = UserManager.retrieve_by_email(email)
-    if user and user.authenticate(password):
+    Authentication resource for generic user.
+    :param auth: a dict with email and password keys.
+    :return: the response 200 if credentials are correct, else 401
+    """
+    user = UserManager.retrieve_by_email(auth['email'])
+    if user and user.authenticate(auth['password']):
         return None, 200
 
     return None, 401

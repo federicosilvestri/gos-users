@@ -89,7 +89,7 @@ def register_specifications(_api_app):
     for _, _, files in os.walk(folder):
         for file in files:
             if file.endswith('.yaml') or file.endswith('.yml'):
-                file_path = folder.joinpath(file);
+                file_path = folder.joinpath(file)
                 _api_app.add_api(file_path)
 
 
