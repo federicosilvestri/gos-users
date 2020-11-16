@@ -1,4 +1,5 @@
 from gooutsafe.dao.user_manager import UserManager
+from flask import jsonify
 
 
 def authenticate(auth):
@@ -8,7 +9,15 @@ def authenticate(auth):
     :return: the response 200 if credentials are correct, else 401
     """
     user = UserManager.retrieve_by_email(auth['email'])
-    if user and user.authenticate(auth['password']):
-        return None, 200
+    response = {
+        'authentication': 'failure',
+        'user': None
+    }
+    response_code = 401
 
-    return None, 401
+    if user and user.authenticate(auth['password']):
+        response['authentication'] = 'success'
+        response['user'] = user.serialize()
+        response_code = 200
+
+    return jsonify(response), response_code

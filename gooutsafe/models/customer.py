@@ -63,8 +63,7 @@ class Customer(User):
         self.last_notification_read_time = read_time
 
     def serialize(self):
-        #p_ser = super(Customer, self).serialize()
+        p_ser = super(Customer, self).serialize()
         c_ser = dict([(k, self.__getattribute__(k)) for k in self.LIST])
-        #return dict(c_ser, **p_ser)
-        print (c_ser)
-        return c_ser
+
+        return dict(c_ser, **p_ser)

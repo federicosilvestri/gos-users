@@ -52,7 +52,7 @@ paths:
 
   /user/{user_id}:
     get:
-      tags: [User]
+      tags: [ User ]
       description: Get a customer by its id
       operationId: gooutsafe.resources.users.get_user
       parameters:
@@ -97,10 +97,42 @@ paths:
       responses:
         200:
           description: User credentials are correct
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authentication:
+                    type: enum
+                    enum:
+                      - 'success'
+                      - 'failure'
+                    default: 'failure'
+                  user:
+                    $ref: '#/components/schemas/Customer'
+
         400:
           description: User credentials are not correct
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authentication:
+                    type: enum
+                    enum:
+                      - 'success'
+                      - 'failure'
+                    default: 'failure'
         default:
           description: An error occured during login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error_message:
+                    type: string
 
 components:
   schemas:
@@ -142,7 +174,7 @@ components:
           example: 'abcd1234'
           minLength: 5
           maxLength: 127
-    
+
     Operator:
       required:
         - email
