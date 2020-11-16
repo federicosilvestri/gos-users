@@ -26,7 +26,6 @@ class Customer(User):
 
     def __init__(self, *args, **kw):
         super(Customer, self).__init__(*args, **kw)
-        self.LIST = self.SERIALIZE_LIST + self.LIST
         self._authenticated = False
 
     @staticmethod
@@ -63,7 +62,6 @@ class Customer(User):
         self.last_notification_read_time = read_time
 
     def serialize(self):
-        p_ser = super(Customer, self).serialize()
+        p_ser = dict([(k, self.__getattribute__(k)) for k in self.SERIALIZE_LIST])
         c_ser = dict([(k, self.__getattribute__(k)) for k in self.LIST])
-
         return dict(c_ser, **p_ser)
