@@ -25,6 +25,8 @@ def create_customer():
                                           '%Y-%m-%d')
     user.set_email(email)
     user.set_password(password)
+    if post_data.get('social_number') != "":
+        user.set_social_number(post_data.get('social_number'))
     user.set_firstname(post_data.get('firstname'))
     user.set_lastname(post_data.get('lastname'))
     user.set_birthday(birthday)
@@ -79,8 +81,20 @@ def get_user(user_id):
     return jsonify(user.serialize()), 200
 
 
+def get_user_by_email(user_email):
+    """
+    Get a user by its current id
+    :param user_id: user it
+    :return: json response
+    """
+    user = UserManager.retrieve_by_email(user_email)
+    if user is None:
+        return NoContent, 404
 
-def delete_user(id_):
+    return jsonify(user.serialize()), 200
+
+
+def delete_user(id):
     """Deletes the data of the user from the database.
 
     Args:
@@ -90,55 +104,77 @@ def delete_user(id_):
         Redirects the view to the home page
     """
 
-    user = UserManager.retrieve_by_id(id_)
-    if user is not None and user.type == "operator":
-        restaurant = RestaurantManager.retrieve_by_operator_id(id_)
+    user = UserManager.retrieve_by_id(id)
+    #TODO
+    """if user is not None and user.type == "operator":
+        restaurant = RestaurantManager.retrieve_by_operator_id(id)
         if restaurant is not None:
-            RestaurantManager.delete_restaurant(restaurant)
+            RestaurantManager.delete_restaurant(restaurant)"""
 
-    UserManager.delete_user_by_id(id_)
-    return redirect(url_for('home.index'))
+    UserManager.delete_user_by_id(id)
+    response_object = {
+        'status': 'success',
+        'message': 'Successfully deleted',
+    }
+
+    return jsonify(response_object), 200
 
 
-def update_user(id):
-    """This method allows the user to edit their personal information.
+def update_customer(id):
+    """This method allows the customer to edit their personal information.
 
     Args:
-        id (int): the univocal id for the user
+        id (int): the univocal id for the customer
 
     Returns:
-        Redirects the view to the personal page of the user
+        Redirects the view to the personal page of the customer
     """
-    user = UserManager.retrieve_by_id(id)
-    if user.type == "customer":
-        form = UpdateCustomerForm()
-    elif user.type == "operator":
-        form = LoginForm()
 
     if request.method == "POST":
-        if form.is_submitted():
-            email = form.data['email']
-            searched_user = UserManager.retrieve_by_email(email)
-            if searched_user is not None and id != searched_user.id:
-                flash("Data already present in the database.")
-                return render_template('update_customer.html', form=form)
+        post_data = request.get_json()
+        email = post_data.get('email')
+        password = post_data.get('password')
+        phone = post_data.get('phone')
+        
+        user = UserManager.retrieve_by_id(id)
+        user.set_email(email)
+        user.set_password(password)
+        user.set_phone(phone)
+        UserManager.update_user(user)
 
-            password = form.data['password']
-            user.set_email(email)
-            user.set_password(password)
+        response_object = {
+                'status': 'success',
+                'message': 'Updated',
+            }
 
-            if user.type == "customer":
-                phone = form.data['phone']
-                user.set_phone(phone)
-                UserManager.update_user(user)
+        return jsonify(response_object), 200
 
-                return redirect(url_for('auth.profile', id=user.id))
 
-            elif user.type == "operator":
-                UserManager.update_user(user)
-                return redirect(url_for('auth.operator', id=user.id))
+def update_operator(id):
+    """This method allows the operator to edit their personal information.
 
-    return render_template('update_customer.html', form=form)
+    Args:
+        id (int): the univocal id for the operator
+
+    Returns:
+        Redirects the view to the personal page of the operator
+    """
+    if request.method == "POST":
+        post_data = request.get_json()
+        email = post_data.get('email')
+        password = post_data.get('password')
+
+        user = UserManager.retrieve_by_id(id)
+        user.set_email(email)
+        user.set_password(password)
+        UserManager.update_user(user)
+        
+        response_object = {
+                'status': 'success',
+                'message': 'Updated',
+            }
+
+        return jsonify(response_object), 200
 
 
 def add_social_number(id):
@@ -150,12 +186,16 @@ def add_social_number(id):
     Returns:
         Redirects the view to the personal page of the user
     """
-    social_form = AddSocialNumberForm()
     user = UserManager.retrieve_by_id(id)
     if request.method == "POST":
-        if social_form.is_submitted():
-            social_number = social_form.data['social_number']
-            user.set_social_number(social_number)
-            UserManager.update_user(user)
+        post_data = request.get_json()
+        social_number = post_data.get('social_number')
+        user.set_social_number(social_number)
+        UserManager.update_user(user)
 
-    # return redirect(url_for('auth.profile', id=user.id))
+        response_object = {
+            'status': 'success',
+            'message': 'Added social number',
+        }
+
+        return jsonify(response_object), 200
