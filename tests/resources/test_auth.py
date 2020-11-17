@@ -14,21 +14,25 @@ class TestAuth(ViewTest):
         #login for a customer
         customer = self.login_test_customer()
         #login with a wrong email
-        data = data = {'email': customer.email, 'password': TestAuth.faker.password()}
-        assert self.client.post('/login', data=data, follow_redirects=True).status_code == 200
+        data = {'email': customer.email, 'password': TestAuth.faker.password()}
+        response = self.client.post('/authenticate', json=data)
+        json_response = response.json
+        assert response.status_code == 401
+        assert json_response["authentication"] == 'failure'
+        assert json_response['user'] is None
         #login for an operator
         self.login_test_operator()
         #login for non existing customer
         data = {'email': TestAuth.faker.email(), 'password': TestAuth.faker.password()}
-        assert self.client.post('/login', data=data, follow_redirects=True).status_code == 200
+        response = self.client.post('/authenticate', json=data)
+        json_response = response.json
+        assert response.status_code == 401
+        assert json_response["authentication"] == 'failure'
+        assert json_response['user'] is None
         #login for an authority
         self.login_test_authority()
-
-    def test_get_relogin(self):
-        rv = self.client.get('/relogin')
-        assert rv.status_code == 200
-
-    def test_get_profile_another_customer(self):
+    #useless test for user microservice
+    """def test_get_profile_another_customer(self):
         customer = self.login_test_customer()
         self.login_test_customer()
         #redirect to your home page if you try to see a profile of another customer (for privacy)
@@ -56,7 +60,7 @@ class TestAuth(ViewTest):
         assert rv.status_code == 200
         self.login_test_authority()
         rv = self.client.get('/authority/'+str(authority.id)+"/0", follow_redirects=True)
-        assert rv.status_code == 200
+        assert rv.status_code == 200"""
 
     def test_notifications(self):
         self.login_test_customer()

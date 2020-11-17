@@ -28,7 +28,7 @@ class ViewTest(unittest.TestCase):
 
     def login_test_customer(self):
         """
-        Simulate the customer login for testing the resources with @login_required
+        Simulate the customer login for testing the resources
         :return: customer
         """
         customer, _ = self.test_customer.generate_random_customer()
@@ -36,12 +36,17 @@ class ViewTest(unittest.TestCase):
         customer.set_password(customer.password)
         self.customer_manager.create_customer(customer=customer)
         data = {'email': customer.email, 'password': psw}
-        assert self.client.post('/login', data=data, follow_redirects=True).status_code == 200
+        response = self.client.post('/authenticate', json=data)
+        json_response = response.json
+        assert response.status_code == 200
+        assert json_response["authentication"] == 'success'
+        assert json_response['user'] is not None
+
         return customer
 
     def login_test_operator(self):
         """
-        Simulate the operator login for testing the resources with @login_required
+        Simulate the operator login for testing the resources
         :return: operator
         """
         operator, _ = self.test_operator.generate_random_operator()
@@ -49,12 +54,17 @@ class ViewTest(unittest.TestCase):
         operator.set_password(operator.password)
         self.operator_manager.create_operator(operator=operator)
         data = {'email': operator.email, 'password': psw}
-        assert self.client.post('/login', data=data, follow_redirects=True).status_code == 200
+        response = self.client.post('/authenticate', json=data)
+        json_response = response.json
+        assert response.status_code == 200
+        assert json_response["authentication"] == 'success'
+        assert json_response['user'] is not None
+
         return operator
 
     def login_test_authority(self):
         """
-        Simulate the authority login for testing the resources with @login_required
+        Simulate the authority login for testing the resources
         :return: authority
         """
         authority, _ = self.test_authority.generate_random_authority()
@@ -62,5 +72,10 @@ class ViewTest(unittest.TestCase):
         authority.set_password(authority.password)
         self.authority_manager.create_authority(authority=authority)
         data = {'email': authority.email, 'password': psw}
-        assert self.client.post('/login', data=data, follow_redirects=True).status_code == 200
+        response = self.client.post('/authenticate', json=data)
+        json_response = response.json
+        assert response.status_code == 200
+        assert json_response["authentication"] == 'success'
+        assert json_response['user'] is not None
+        
         return authority
