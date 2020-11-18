@@ -126,14 +126,3 @@ def register_test_blueprints(_app):
     from gooutsafe.resources.utils import utils
     _app.register_blueprint(utils)
 
-
-def register_handlers(_app):
-    """
-    This function registers all handlers to application
-    :param _app: application object
-    :return: None
-    """
-    from .handlers import page_404, error_500
-
-    _app.register_error_handler(404, page_404)
-    _app.register_error_handler(500, error_500)
