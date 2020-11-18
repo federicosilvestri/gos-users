@@ -57,8 +57,8 @@ def create_app():
     env.from_object(config_object)
 
     # loading communications
-    import gooutsafe.comm as comm
-    comm.init_rabbit_mq(app)
+    #import gooutsafe.comm as comm
+    #comm.init_rabbit_mq(app)
 
     # registering db
     db = SQLAlchemy(
