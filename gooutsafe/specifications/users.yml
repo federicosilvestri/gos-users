@@ -71,6 +71,48 @@ paths:
         default:
           description: An error occured during retrieving the user
 
+  /user_email/{user_email}:
+    get:
+      tags: [ User ]
+      description: Get a customer by its email
+      operationId: gooutsafe.resources.users.get_user_by_email
+      parameters:
+        - name: user_email
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Return user
+        404:
+          description: User not found
+        default:
+          description: An error occured during retrieving the user
+  
+  /delete/{id}:
+    get:
+      tags: [ User ]
+      description: Delete a customer by its id
+      operationId: gooutsafe.resources.users.delete_user
+      parameters:
+        - name: id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: User deleted
+        404:
+          description: User not found
+        default:
+          description: An error occured during the deletion the user
+
   /authenticate:
     post:
       summary: Authenticate a user
@@ -134,6 +176,90 @@ paths:
                   error_message:
                     type: string
 
+  /add_social_number/{id}:
+    post:
+      summary: Add the social number to a customer
+      tags:
+        - Users
+      operationId: gooutsafe.resources.users.add_social_number
+      parameters:
+        - name: id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Adds the customer's social number
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocialNumber'
+      responses:
+        201:
+          description: Created
+        200:
+          description: User already exists
+        default:
+          description: Error during creation of the user
+  
+  /update_customer/{id}:
+    post:
+      summary: Updates the fields for the customer depending on its id
+      tags:
+        - Users
+      operationId: gooutsafe.resources.users.update_customer
+      parameters:
+        - name: id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updates the fields for the customer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomer'
+      responses:
+        200:
+          description: Updated
+        default:
+          description: Error during the update of the user
+    
+  /update_operator/{id}:
+    post:
+      summary: Updates the fields for the operator depending on its id
+      tags:
+        - Users
+      operationId: gooutsafe.resources.users.update_operator
+      parameters:
+        - name: id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Updates the fields for the operator
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOperator'
+      responses:
+        200:
+          description: Updated
+        default:
+          description: Error during the update of the user
+
+          
 components:
   schemas:
     Customer:
@@ -182,6 +308,66 @@ components:
       properties:
         email:
           type: string
+          description: Operator email
+          example: mario.rossi@example.org
+          format: email
+        password:
+          type: string
+          description: Operator password
+          example: 'abcd1234'
+          minLength: 5
+          maxLength: 127
+
+    SocialNumber:
+      required:
+        - social_number
+      type: object
+      properties:
+        social_number:
+          type: string
+          description: Customer social number
+          example: OYHSND89H47EDFTQ
+          minLength: 16
+    
+    UpdateCustomer:
+      required:
+        - email
+        - password
+        - phone
+      type: object
+      properties:
+        email:
+          type: string
           description: Customer email
           example: mario.rossi@example.org
           format: email
+        password:
+          type: string
+          description: Customer password
+          example: 'abcd1234'
+          minLength: 5
+          maxLength: 127
+        phone:
+          type: string
+          description: Customer phone number
+          example: '+39 3332222384'
+          minLength: 10
+          maxLength: 25
+    
+    UpdateOperator:
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+          description: Operator email
+          example: mario.rossi@example.org
+          format: email
+        password:
+          type: string
+          description: Operator password
+          example: 'abcd1234'
+          minLength: 5
+          maxLength: 127
