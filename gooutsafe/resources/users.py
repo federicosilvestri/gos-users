@@ -97,18 +97,15 @@ def get_user_by_email(user_email):
     return jsonify(user.serialize()), 200
 
 
-def delete_user(id):
+def delete_user(user_id):
     """Deletes the data of the user from the database.
 
     Args:
-        id (int): takes the unique id as a parameter
+        user_id (int): takes the unique id as a parameter
 
     Returns:
         Redirects the view to the home page
     """
-
-<<<<<<< HEAD
-    user = UserManager.retrieve_by_id(user_id)
 
     """
     
@@ -119,15 +116,8 @@ def delete_user(id):
         if restaurant is not None:
             RestaurantManager.delete_restaurant(restaurant)
     """
-=======
-    user = UserManager.retrieve_by_id(id)
-    #if user is not None and user.type == "operator":
-        #restaurant = RestaurantManager.retrieve_by_operator_id(id)
-        #if restaurant is not None:
-            #RestaurantManager.delete_restaurant(restaurant)
->>>>>>> ad86176903e5707032db2d74343cc4e6f671894d
 
-    UserManager.delete_user_by_id(id)
+    UserManager.delete_user_by_id(user_id)
     response_object = {
         'status': 'success',
         'message': 'Successfully deleted',
