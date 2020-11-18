@@ -41,6 +41,7 @@ def create_customer():
 
     return jsonify(response_object), 201
 
+
 def create_operator():
     """ This method allows the creation of a new operator
     """
@@ -84,7 +85,7 @@ def get_user(user_id):
 def get_user_by_email(user_email):
     """
     Get a user by its current id
-    :param user_id: user it
+    :param user_email: user it
     :return: json response
     """
     user = UserManager.retrieve_by_email(user_email)
@@ -94,24 +95,23 @@ def get_user_by_email(user_email):
     return jsonify(user.serialize()), 200
 
 
-def delete_user(id):
+def delete_user(user_id):
     """Deletes the data of the user from the database.
 
     Args:
-        id_ (int): takes the unique id as a parameter
+        user_id (int): takes the unique id as a parameter
 
     Returns:
         Redirects the view to the home page
     """
 
-    user = UserManager.retrieve_by_id(id)
-    #TODO
-    """if user is not None and user.type == "operator":
+    user = UserManager.retrieve_by_id(user_id)
+    if user is not None and user.type == "operator":
         restaurant = RestaurantManager.retrieve_by_operator_id(id)
         if restaurant is not None:
-            RestaurantManager.delete_restaurant(restaurant)"""
+            RestaurantManager.delete_restaurant(restaurant)
 
-    UserManager.delete_user_by_id(id)
+    UserManager.delete_user_by_id(user_id)
     response_object = {
         'status': 'success',
         'message': 'Successfully deleted',
@@ -120,11 +120,11 @@ def delete_user(id):
     return jsonify(response_object), 200
 
 
-def update_customer(id):
+def update_customer(user_id):
     """This method allows the customer to edit their personal information.
 
     Args:
-        id (int): the univocal id for the customer
+        user_id (int): the univocal id for the customer
 
     Returns:
         Redirects the view to the personal page of the customer
@@ -135,26 +135,26 @@ def update_customer(id):
         email = post_data.get('email')
         password = post_data.get('password')
         phone = post_data.get('phone')
-        
-        user = UserManager.retrieve_by_id(id)
+
+        user = UserManager.retrieve_by_id(user_id)
         user.set_email(email)
         user.set_password(password)
         user.set_phone(phone)
         UserManager.update_user(user)
 
         response_object = {
-                'status': 'success',
-                'message': 'Updated',
-            }
+            'status': 'success',
+            'message': 'Updated',
+        }
 
         return jsonify(response_object), 200
 
 
-def update_operator(id):
+def update_operator(user_id):
     """This method allows the operator to edit their personal information.
 
     Args:
-        id (int): the univocal id for the operator
+        user_id (int): the univocal id for the operator
 
     Returns:
         Redirects the view to the personal page of the operator
@@ -164,29 +164,29 @@ def update_operator(id):
         email = post_data.get('email')
         password = post_data.get('password')
 
-        user = UserManager.retrieve_by_id(id)
+        user = UserManager.retrieve_by_id(user_id)
         user.set_email(email)
         user.set_password(password)
         UserManager.update_user(user)
-        
+
         response_object = {
-                'status': 'success',
-                'message': 'Updated',
-            }
+            'status': 'success',
+            'message': 'Updated',
+        }
 
         return jsonify(response_object), 200
 
 
-def add_social_number(id):
+def add_social_number(user_id):
     """Allows the user to insert their SSN.
 
     Args:
-        id (int): the univocal id for the user
+        user_id (int): the univocal id for the user
 
     Returns:
         Redirects the view to the personal page of the user
     """
-    user = UserManager.retrieve_by_id(id)
+    user = UserManager.retrieve_by_id(user_id)
     if request.method == "POST":
         post_data = request.get_json()
         social_number = post_data.get('social_number')

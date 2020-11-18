@@ -1,17 +1,22 @@
+"""
+Flask initialization
+"""
 import os
+
+__version__ = '0.1'
 
 import connexion
 from flask_environments import Environments
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-
-__version__ = '0.1'
+import logging
 
 db = None
 migrate = None
 debug_toolbar = None
 app = None
 api_app = None
+logger = None
 
 
 def create_app():
@@ -24,12 +29,15 @@ def create_app():
     global migrate
     global api_app
 
+    # first initialize the logger
+    init_logger()
+
     api_app = connexion.FlaskApp(
         __name__,
         server='flask',
         specification_dir='openapi/',
     )
-    
+
     # getting the flask app
     app = api_app.app
 
@@ -47,6 +55,10 @@ def create_app():
     # Load config
     env = Environments(app)
     env.from_object(config_object)
+
+    # loading communications
+    import gooutsafe.comm as comm
+    comm.init_rabbit_mq(app)
 
     # registering db
     db = SQLAlchemy(
@@ -74,6 +86,17 @@ def create_app():
     register_specifications(api_app)
 
     return app
+
+
+def init_logger():
+    global logger
+    """
+    Initialize the internal application logger.
+    :return: None
+    """
+    logger = logging.getLogger(__name__)
+    from flask.logging import default_handler
+    logger.addHandler(default_handler)
 
 
 def register_specifications(_api_app):
