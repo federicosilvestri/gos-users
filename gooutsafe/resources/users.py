@@ -106,10 +106,16 @@ def delete_user(user_id):
     """
 
     user = UserManager.retrieve_by_id(user_id)
+
+    """
+    
+    WE HAVE TO SEND A MESSAGE TO BROKER;
+    USER ID= IS ELIMINATED
     if user is not None and user.type == "operator":
         restaurant = RestaurantManager.retrieve_by_operator_id(id)
         if restaurant is not None:
             RestaurantManager.delete_restaurant(restaurant)
+    """
 
     UserManager.delete_user_by_id(user_id)
     response_object = {

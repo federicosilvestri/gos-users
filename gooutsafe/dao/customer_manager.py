@@ -1,5 +1,6 @@
 from gooutsafe.models.customer import Customer
 from .manager import Manager
+from gooutsafe.comm.manager import EventManager
 
 
 class CustomerManager(Manager):
@@ -31,10 +32,10 @@ class CustomerManager(Manager):
     @staticmethod
     def retrieve_all_positive():
         pos_customers = Customer.query.filter_by(health_status=True).all()
-        if (len(pos_customers) != 0):
+
+        if len(pos_customers) > 0:
             return pos_customers
-        else:
-            return None
+        return None
 
     @staticmethod
     def update_customer(customer: Customer):
@@ -43,6 +44,8 @@ class CustomerManager(Manager):
     @staticmethod
     def delete_customer(customer: Customer):
         Manager.delete(customer=customer)
+        # trigger the event
+        EventManager.customer_deleted(customer.id)
 
     @staticmethod
     def delete_customer_by_id(id_):
