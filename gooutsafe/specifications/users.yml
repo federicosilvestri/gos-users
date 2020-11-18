@@ -92,10 +92,10 @@ paths:
         default:
           description: An error occured during retrieving the user
   
-  /delete/{id}:
-    get:
+  /user/{id}:
+    delete:
       tags: [ User ]
-      description: Delete a customer by its id
+      description: Delete a user by its id
       operationId: gooutsafe.resources.users.delete_user
       parameters:
         - name: id
@@ -106,7 +106,7 @@ paths:
             type: integer
             format: int64
       responses:
-        200:
+        202:
           description: User deleted
         404:
           description: User not found
@@ -176,8 +176,8 @@ paths:
                   error_message:
                     type: string
 
-  /add_social_number/{id}:
-    post:
+  /social_number/{id}:
+    put:
       summary: Add the social number to a customer
       tags:
         - Users
@@ -198,15 +198,13 @@ paths:
             schema:
               $ref: '#/components/schemas/SocialNumber'
       responses:
-        201:
+        204:
           description: Created
-        200:
-          description: User already exists
         default:
           description: Error during creation of the user
   
-  /update_customer/{id}:
-    post:
+  /customer/{id}:
+    put:
       summary: Updates the fields for the customer depending on its id
       tags:
         - Users
@@ -227,13 +225,13 @@ paths:
             schema:
               $ref: '#/components/schemas/UpdateCustomer'
       responses:
-        200:
+        204:
           description: Updated
         default:
           description: Error during the update of the user
     
-  /update_operator/{id}:
-    post:
+  /operator/{id}:
+    put:
       summary: Updates the fields for the operator depending on its id
       tags:
         - Users
@@ -254,7 +252,7 @@ paths:
             schema:
               $ref: '#/components/schemas/UpdateOperator'
       responses:
-        200:
+        204:
           description: Updated
         default:
           description: Error during the update of the user
