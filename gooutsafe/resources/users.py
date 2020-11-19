@@ -112,10 +112,13 @@ def get_user_by_phone(user_phone):
     return jsonify(user.serialize()), 200
 
 def get_customer_by_ssn(customer_ssn):
-    """
-    Get a customer by its current ssn
-    :param customer_ssn: customer SSN
-    :return: json response
+    """Get a customer by his ssn
+
+    Args:
+        customer_ssn (string)
+
+    Returns:
+        json response
     """
     customer = CustomerManager.retrieve_by_ssn(customer_ssn)
     if customer is None:
@@ -125,10 +128,13 @@ def get_customer_by_ssn(customer_ssn):
     return jsonify(customer.serialize()), 200
 
 def get_customer_by_phone(customer_phone):
-    """
-    Get a customer by its current phone
-    :param customer_ssn: customer telephone number
-    :return: json response
+    """Get a customer by its phone number
+
+    Args:
+        customer_phone (string)
+
+    Returns:
+        json response
     """
     customer = CustomerManager.retrieve_by_phone(customer_phone)
     if customer is None:
@@ -136,6 +142,21 @@ def get_customer_by_phone(customer_phone):
         return jsonify(response), 404
 
     return jsonify(customer.serialize()), 200
+
+#TODO implement function
+def get_all_positive_customers():
+    """Get all positive customers
+
+    Returns:
+        json response
+    """
+    pos_customers = CustomerManager.retrieve_all_positive()
+    if pos_customers is None:
+        response = {'status': 'No positive customers'}
+        return jsonify(response), 404
+        
+    return jsonify([customer.serialize() for customer in pos_customers]), 200
+    
 
 def delete_user(user_id):
     """Deletes the data of the user from the database.
