@@ -76,9 +76,6 @@ def get_user(user_id):
     :param user_id: user it
     :return: json response
     """
-    from gooutsafe.comm.manager import EventManager
-    EventManager.customer_deleted(12)
-
     user = UserManager.retrieve_by_id(user_id)
     if user is None:
         response = {'status': 'User not present'}
