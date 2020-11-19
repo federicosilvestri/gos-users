@@ -57,8 +57,13 @@ def create_app():
     env.from_object(config_object)
 
     # loading communications
-    #import gooutsafe.comm as comm
-    #comm.init_rabbit_mq(app)
+    import gooutsafe.comm as comm
+
+    if flask_env != 'production':
+        # disable communication for testing purposes
+        comm.disabled = True
+    else:
+        comm.init_rabbit_mq(app)
 
     # registering db
     db = SQLAlchemy(

@@ -1,5 +1,6 @@
 from gooutsafe.models.operator import Operator
 from .manager import Manager
+from gooutsafe.comm.manager import EventManager
 
 
 class OperatorManager(Manager):
@@ -20,6 +21,8 @@ class OperatorManager(Manager):
     @staticmethod
     def delete_operator(operator: Operator):
         Manager.delete(operator=operator)
+        # trigger the event
+        EventManager.operator_deleted(operator.id)
 
     @staticmethod
     def delete_operator_by_id(id_):

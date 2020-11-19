@@ -29,7 +29,14 @@ class UserManager(Manager):
 
     @staticmethod
     def delete_user(user: User):
-        Manager.delete(user=user)
+        if user.is_customer():
+            from .customer_manager import CustomerManager
+            CustomerManager.delete_customer(user)
+        elif user.is_rest_operator():
+            from .operator_manager import OperatorManager
+            OperatorManager.delete_operator(user)
+        else:
+            Manager.delete(user=user)
 
     @staticmethod
     def delete_user_by_id(id_: int):

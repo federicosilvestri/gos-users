@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from connexion import NoContent
 from gooutsafe.dao.user_manager import UserManager
+from gooutsafe.dao.customer_manager import CustomerManager
 from gooutsafe.models.customer import Customer
 from gooutsafe.models.operator import Operator
 import datetime
@@ -85,8 +86,8 @@ def get_user(user_id):
 
 def get_user_by_email(user_email):
     """
-    Get a user by its current id
-    :param user_email: user it
+    Get a user by its current email
+    :param user_email: user email
     :return: json response
     """
     user = UserManager.retrieve_by_email(user_email)
@@ -124,24 +125,53 @@ def get_user_by_social_number(user_social_number):
 
     return jsonify(user.serialize()), 404
 
+def get_customer_by_ssn(customer_ssn):
+    """
+    Get a customer by its current ssn
+    :param customer_ssn: customer SSN
+    :return: json response
+    """
+    customer = CustomerManager.retrieve_by_ssn(customer_ssn)
+    if customer is None:
+        response = {'status': 'Costumer not present'}
+        return jsonify(response), 404
 
-def delete_user(id):
+    return jsonify(customer.serialize()), 200
+
+def get_customer_by_phone(customer_phone):
+    """
+    Get a customer by its current phone
+    :param customer_ssn: customer telephone number
+    :return: json response
+    """
+    customer = CustomerManager.retrieve_by_phone(customer_phone)
+    if customer is None:
+        response = {'status': 'Costumer not present'}
+        return jsonify(response), 404
+
+    return jsonify(customer.serialize()), 200
+
+def delete_user(user_id):
     """Deletes the data of the user from the database.
 
     Args:
-        id (int): takes the unique id as a parameter
+        user_id (int): takes the unique id as a parameter
 
     Returns:
         Redirects the view to the home page
     """
 
-    user = UserManager.retrieve_by_id(id)
-    #if user is not None and user.type == "operator":
-        #restaurant = RestaurantManager.retrieve_by_operator_id(id)
-        #if restaurant is not None:
-            #RestaurantManager.delete_restaurant(restaurant)
+    """
+    
+    WE HAVE TO SEND A MESSAGE TO BROKER;
+    USER ID= IS ELIMINATED
+    if user is not None and user.type == "operator":
+        restaurant = RestaurantManager.retrieve_by_operator_id(id)
+        if restaurant is not None:
+            RestaurantManager.delete_restaurant(restaurant)
+    """
 
-    UserManager.delete_user_by_id(id)
+    UserManager.delete_user_by_id(user_id)
     response_object = {
         'status': 'success',
         'message': 'Successfully deleted',

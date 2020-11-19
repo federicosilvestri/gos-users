@@ -16,12 +16,13 @@ import os
 from gooutsafe import logger
 from flask_rabmq import RabbitMQ
 
-__REQUIRED_CONFIG_KEYS = ['RABBIT_MQ_USERNAME', 'RABBIT_MQ_PASSWORD', 'RABBIT_MQ_HOST', 'RABBIT_MQ_PORT',
+__REQUIRED_CONFIG_KEYS = ['RABBIT_MQ_HOST', 'RABBIT_MQ_PORT',
                           'RABBIT_MQ_VHOST', 'RABBIT_MQ_SEND_EXCHANGE_NAME']
 
 """Rabbit MQ instance
 """
 rabbit = None
+disabled = False
 
 
 def init_rabbit_mq(app):
@@ -47,8 +48,8 @@ def init_rabbit_mq(app):
         conf[key] = value
 
     # Setting up the RabbitURI
-    app.config.setdefault('RABMQ_RABBITMQ_URL', 'amqp://%s:%s@%s:%s/%s' % (
-        conf['RABBIT_MQ_USERNAME'], conf['RABBIT_MQ_PASSWORD'], conf['RABBIT_MQ_HOST'], conf['RABBIT_MQ_PORT'],
+    app.config.setdefault('RABMQ_RABBITMQ_URL', 'amqp://%s:%s/%s' % (
+        conf['RABBIT_MQ_HOST'], conf['RABBIT_MQ_PORT'],
         conf['RABBIT_MQ_VHOST']))
     app.config.setdefault('RABMQ_SEND_EXCHANGE_NAME', conf['RABBIT_MQ_SEND_EXCHANGE_NAME'])
 

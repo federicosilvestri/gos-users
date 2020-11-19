@@ -3,38 +3,6 @@ from flask_login import login_required, current_user
 
 from gooutsafe.dao.customer_manager import CustomerManager
 
-authority = Blueprint('authority', __name__)
-
-
-@authority.route('/ha/search_customer', methods=['POST'])
-@login_required
-def search_customer():
-    """Method that the health authority uses to search through the users.
-
-    Returns:
-        Redirects the view to the home page of the health authority.
-        If this method is accessed by an unathorized user, it redirects the
-        view to the index page
-    """
-    if current_user is not None and current_user.type == 'authority':
-        form = AuthorityForm()
-        customer = None
-        if request.method == 'POST':
-            track_type = form.data['track_type']
-            customer_ident = form.data['customer_ident']
-            if track_type == 'SSN':
-                customer = CustomerManager.retrieve_by_ssn(ssn=customer_ident)
-            elif track_type == 'Email':
-                customer = CustomerManager.retrieve_by_email(email=customer_ident)
-            else:
-                customer = CustomerManager.retrieve_by_phone(phone=customer_ident)
-            if customer is None:
-                flash("The customer doesn't exist")
-                return redirect(url_for('auth.authority', id=current_user.id, positive_id=0))
-        return redirect(url_for('auth.authority', id=current_user.id, positive_id=customer.id))
-    else:
-        return redirect(url_for('home.index'))
-
 
 @authority.route('/ha/mark_positive/<int:customer_id>', methods=['GET', 'POST'])
 @login_required
