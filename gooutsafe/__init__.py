@@ -84,9 +84,6 @@ def create_app():
         # we need to populate the db
         db.create_all()
 
-    if flask_env == 'testing' or flask_env == 'development':
-        register_test_blueprints(app)
-
     # registering to api app all specifications
     register_specifications(api_app)
 
@@ -119,15 +116,4 @@ def register_specifications(_api_app):
             if file.endswith('.yaml') or file.endswith('.yml'):
                 file_path = folder.joinpath(file)
                 _api_app.add_api(file_path)
-
-
-def register_test_blueprints(_app):
-    """
-    This function registers the blueprints used only for testing purposes
-    :param _app: Flask Application Object
-    :return: None
-    """
-
-    from gooutsafe.resources.utils import utils
-    _app.register_blueprint(utils)
 

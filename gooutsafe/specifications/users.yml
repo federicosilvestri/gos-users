@@ -113,8 +113,9 @@ paths:
 
   /customer_ssn/{customer_ssn}:
     get:
-      tags: [ Customer ]
-      description: Get a customer by its ssn
+      tags: 
+        - Customer
+      summary: Get a customer by its ssn
       operationId: gooutsafe.resources.users.get_customer_by_ssn
       parameters:
         - name: customer_ssn
@@ -133,8 +134,9 @@ paths:
 
   /customer_phone/{customer_phone}:
     get:
-      tags: [ Customer ]
-      description: Get a customer by its phone
+      tags: 
+        - Customer
+      summary: Get a customer by its phone
       operationId: gooutsafe.resources.users.get_customer_by_phone
       parameters:
         - name: customer_phone
@@ -149,7 +151,22 @@ paths:
         404:
           description: Customer not found
         default:
-          description: An error occured during retrieving the user 
+          description: An error occured during retrieving the user
+  
+  /positive_customers:
+    get:
+      tags: 
+        - Customer
+      summary: Get all positive customers
+      operationId: gooutsafe.resources.users.get_all_positive_customers
+      responses:
+        200:
+          description: Return all positive customers
+        404:
+          description: No positive customers
+        default:
+          description: An error occured during retrieving the customers
+  
 
   /authenticate:
     post:
