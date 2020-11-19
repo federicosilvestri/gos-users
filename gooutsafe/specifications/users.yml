@@ -91,6 +91,48 @@ paths:
           description: User not found
         default:
           description: An error occured during retrieving the user
+    
+  /user_phone/{user_phone}:
+    get:
+      tags: [ User ]
+      description: Get a customer by its phone
+      operationId: gooutsafe.resources.users.get_user_by_phone
+      parameters:
+        - name: user_phone
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Return user
+        404:
+          description: User not found
+        default:
+          description: An error occured during retrieving the user
+
+  /user_social_number/{user_social_number}:
+    get:
+      tags: [ User ]
+      description: Get a customer by its social_number
+      operationId: gooutsafe.resources.users.get_user_by_social_number
+      parameters:
+        - name: user_social_number
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Return user
+        404:
+          description: User not found
+        default:
+          description: An error occured during retrieving the user
   
   /user/{id}:
     delete:

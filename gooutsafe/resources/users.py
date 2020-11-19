@@ -92,9 +92,37 @@ def get_user_by_email(user_email):
     user = UserManager.retrieve_by_email(user_email)
     if user is None:
         response = {'status': 'User present'}
-        return jsonify(response), 404
+        return jsonify(response), 200
 
-    return jsonify(user.serialize()), 200
+    return jsonify(user.serialize()), 404
+
+
+def get_user_by_phone(user_phone):
+    """
+    Get a user by its current id
+    :param user_phone: user it
+    :return: json response
+    """
+    user = UserManager.retrieve_by_phone(user_phone)
+    if user is None:
+        response = {'status': 'User present'}
+        return jsonify(response), 200
+
+    return jsonify(user.serialize()), 404
+
+
+def get_user_by_social_number(user_social_number):
+    """
+    Get a user by its current id
+    :param user_social_number: user social number
+    :return: json response
+    """
+    user = UserManager.retrieve_by_social_number(user_social_number)
+    if user is None:
+        response = {'status': 'User present'}
+        return jsonify(response), 200
+
+    return jsonify(user.serialize()), 404
 
 
 def delete_user(id):
