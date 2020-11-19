@@ -71,34 +71,12 @@ paths:
         default:
           description: An error occured during retrieving the user
 
-  /user_email/{user_email}:
-    get:
-      tags: [ User ]
-      description: Get a customer by its email
-      operationId: gooutsafe.resources.users.get_user_by_email
-      parameters:
-        - name: user_email
-          description: User Unique ID
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        200:
-          description: Return user
-        404:
-          description: User not found
-        default:
-          description: An error occured during retrieving the user
-  
-  /user/{id}:
     delete:
       tags: [ User ]
       description: Delete a user by its id
       operationId: gooutsafe.resources.users.delete_user
       parameters:
-        - name: id
+        - name: user_id
           description: User Unique ID
           in: path
           required: true
@@ -112,6 +90,66 @@ paths:
           description: User not found
         default:
           description: An error occured during the deletion the user
+
+  /user_email/{user_email}:
+    get:
+      tags: [ User ]
+      description: Get a user by its email
+      operationId: gooutsafe.resources.users.get_user_by_email
+      parameters:
+        - name: user_email
+          description: User Unique Email
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Return user
+        404:
+          description: User not found
+        default:
+          description: An error occured during retrieving the user
+
+  /customer_ssn/{customer_ssn}:
+    get:
+      tags: [ Customer ]
+      description: Get a customer by its ssn
+      operationId: gooutsafe.resources.users.get_customer_by_ssn
+      parameters:
+        - name: customer_ssn
+          description: Customer Unique SSN
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Return user
+        404:
+          description: Customer not found
+        default:
+          description: An error occured during retrieving the user
+
+  /customer_phone/{customer_phone}:
+    get:
+      tags: [ Customer ]
+      description: Get a customer by its phone
+      operationId: gooutsafe.resources.users.get_customer_by_phone
+      parameters:
+        - name: customer_phone
+          description: Customer phone
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Return user
+        404:
+          description: Customer not found
+        default:
+          description: An error occured during retrieving the user 
 
   /authenticate:
     post:
@@ -145,10 +183,8 @@ paths:
                 type: object
                 properties:
                   authentication:
-                    type: enum
-                    enum:
-                      - 'success'
-                      - 'failure'
+                    type: string
+                    description: "It can be failure or success"
                     default: 'failure'
                   user:
                     $ref: '#/components/schemas/Customer'
@@ -161,10 +197,8 @@ paths:
                 type: object
                 properties:
                   authentication:
-                    type: enum
-                    enum:
-                      - 'success'
-                      - 'failure'
+                    type: string
+                    description: "It can be failure or success"
                     default: 'failure'
         default:
           description: An error occured during login

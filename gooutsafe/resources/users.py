@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from connexion import NoContent
 from gooutsafe.dao.user_manager import UserManager
+from gooutsafe.dao.customer_manager import CustomerManager
 from gooutsafe.models.customer import Customer
 from gooutsafe.models.operator import Operator
 import datetime
@@ -88,17 +89,56 @@ def get_user(user_id):
 
 def get_user_by_email(user_email):
     """
-    Get a user by its current id
-    :param user_email: user it
+    Get a user by its current email
+    :param user_email: user email
     :return: json response
     """
     user = UserManager.retrieve_by_email(user_email)
     if user is None:
-        response = {'status': 'User present'}
+        response = {'status': 'User not present'}
         return jsonify(response), 404
 
     return jsonify(user.serialize()), 200
 
+
+def get_user_by_phone(user_phone):
+    """
+    Get a user by its current id
+    :param user_phone: user it
+    :return: json response
+    """
+    user = UserManager.retrieve_by_phone(user_phone)
+    if user is None:
+        response = {'status': 'User not present'}
+        return jsonify(response), 404
+
+    return jsonify(user.serialize()), 200
+
+def get_customer_by_ssn(customer_ssn):
+    """
+    Get a customer by its current ssn
+    :param customer_ssn: customer SSN
+    :return: json response
+    """
+    customer = CustomerManager.retrieve_by_ssn(customer_ssn)
+    if customer is None:
+        response = {'status': 'Costumer not present'}
+        return jsonify(response), 404
+
+    return jsonify(customer.serialize()), 200
+
+def get_customer_by_phone(customer_phone):
+    """
+    Get a customer by its current phone
+    :param customer_ssn: customer telephone number
+    :return: json response
+    """
+    customer = CustomerManager.retrieve_by_phone(customer_phone)
+    if customer is None:
+        response = {'status': 'Costumer not present'}
+        return jsonify(response), 404
+
+    return jsonify(customer.serialize()), 200
 
 def delete_user(user_id):
     """Deletes the data of the user from the database.
@@ -126,7 +166,7 @@ def delete_user(user_id):
         'message': 'Successfully deleted',
     }
 
-    return jsonify(response_object), 200
+    return jsonify(response_object), 202
 
 
 def update_customer(id):
