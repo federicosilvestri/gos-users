@@ -71,6 +71,26 @@ paths:
         default:
           description: An error occured during retrieving the user
 
+    delete:
+      tags: [ User ]
+      description: Delete a user by its id
+      operationId: gooutsafe.resources.users.delete_user
+      parameters:
+        - name: user_id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        202:
+          description: User deleted
+        404:
+          description: User not found
+        default:
+          description: An error occured during the deletion the user
+
   /user_email/{user_email}:
     get:
       tags: [ User ]
@@ -93,7 +113,7 @@ paths:
 
   /customer_ssn/{customer_ssn}:
     get:
-      tags: [ Costumer ]
+      tags: [ Customer ]
       description: Get a customer by its ssn
       operationId: gooutsafe.resources.users.get_customer_by_ssn
       parameters:
@@ -113,7 +133,7 @@ paths:
 
   /customer_phone/{customer_phone}:
     get:
-      tags: [ Costumer ]
+      tags: [ Customer ]
       description: Get a customer by its phone
       operationId: gooutsafe.resources.users.get_customer_by_phone
       parameters:
@@ -130,27 +150,6 @@ paths:
           description: Customer not found
         default:
           description: An error occured during retrieving the user 
-  
-  /user/{id}:
-    delete:
-      tags: [ User ]
-      description: Delete a user by its id
-      operationId: gooutsafe.resources.users.delete_user
-      parameters:
-        - name: id
-          description: User Unique ID
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        202:
-          description: User deleted
-        404:
-          description: User not found
-        default:
-          description: An error occured during the deletion the user
 
   /authenticate:
     post:
@@ -184,10 +183,8 @@ paths:
                 type: object
                 properties:
                   authentication:
-                    type: enum
-                    enum:
-                      - 'success'
-                      - 'failure'
+                    type: string
+                    description: "It can be failure or success"
                     default: 'failure'
                   user:
                     $ref: '#/components/schemas/Customer'
@@ -200,10 +197,8 @@ paths:
                 type: object
                 properties:
                   authentication:
-                    type: enum
-                    enum:
-                      - 'success'
-                      - 'failure'
+                    type: string
+                    description: "It can be failure or success"
                     default: 'failure'
         default:
           description: An error occured during login

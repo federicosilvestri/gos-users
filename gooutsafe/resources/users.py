@@ -163,7 +163,7 @@ def delete_user(user_id):
         'message': 'Successfully deleted',
     }
 
-    return jsonify(response_object), 200
+    return jsonify(response_object), 202
 
 
 def update_customer(id):
