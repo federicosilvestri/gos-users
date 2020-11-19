@@ -21,7 +21,6 @@ POSTGRES_DB=gos_users_ms
 #
 #------------------------
 RABBITMQ_DEFAULT_VHOST=gos
-RABBITMQ_DEFAULT_EXCHANGE_NAME=gos
 
 #
 # Rabbit MQ configuration

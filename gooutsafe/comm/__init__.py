@@ -33,9 +33,13 @@ def init_rabbit_mq(app):
     """
     global rabbit
 
-    app.config.setdefault('RABMQ_SEND_EXCHANGE_TYPE', 'topic')
     app.config.setdefault('RABMQ_SEND_POOL_SIZE', 2)
     app.config.setdefault('RABMQ_SEND_POOL_ACQUIRE_TIMEOUT', 5)
+    # setting the fanout type to indicate
+    # the publish/subscribe design, as documented
+    # here https://www.rabbitmq.com/tutorials/tutorial-three-python.html
+    #
+    app.config.setdefault('RABMQ_SEND_EXCHANGE_TYPE', 'fanout')
 
     # loading configuration
     conf = dict()
@@ -53,7 +57,6 @@ def init_rabbit_mq(app):
         conf['RABBIT_MQ_VHOST']))
     app.config.setdefault('RABMQ_SEND_EXCHANGE_NAME', conf['RABBIT_MQ_SEND_EXCHANGE_NAME'])
 
-    rabbit = RabbitMQ()
-    rabbit.init_app(app)
+    rabbit = RabbitMQ(app=app)
 
     logger.info('Rabbit MQ initialized!')

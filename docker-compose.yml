@@ -22,9 +22,10 @@ services:
       - migrations
 
   rabbit_mq:
-    image: rabbitmq:3.6
+    image: library/rabbitmq:3.6-management
     ports:
     - "5672:5672"
+    - "15672:15672"
     env_file:
       - env_file
 
