@@ -39,7 +39,7 @@ def init_rabbit_mq(app):
     # the publish/subscribe design, as documented
     # here https://www.rabbitmq.com/tutorials/tutorial-three-python.html
     #
-    app.config.setdefault('RABMQ_SEND_EXCHANGE_TYPE', 'fanout')
+    app.config.setdefault('RABMQ_SEND_EXCHANGE_TYPE', 'topic')
 
     # loading configuration
     conf = dict()
