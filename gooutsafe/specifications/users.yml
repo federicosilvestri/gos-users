@@ -254,6 +254,26 @@ paths:
         default:
           description: Error during creation of the user
   
+  /mark_positive/{id}:
+    put:
+      summary: Mark customer as positive
+      tags:
+        - Costumer
+      operationId: gooutsafe.resources.users.mark_customer
+      parameters:
+        - name: id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Health Status updated
+        default:
+          description: Error during updating of health status
+
   /customer/{id}:
     put:
       summary: Updates the fields for the customer depending on its id

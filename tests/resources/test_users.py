@@ -94,3 +94,11 @@ class TestUsers(ViewTest):
         customer = self.login_test_customer()
         rv = self.client.get('/user_social_number/%s'% (customer.social_number))
         assert rv.status_code == 200
+
+    def test_mark_customer(self):
+        customer = self.login_test_customer()
+        customer.set_health_status(status=False)
+        rv = self.client.put('/mark_positive/%d' % (customer.id))
+        assert rv.status_code == 200
+
+

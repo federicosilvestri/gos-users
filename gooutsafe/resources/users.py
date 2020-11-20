@@ -250,3 +250,10 @@ def add_social_number(id):
         }
 
         return jsonify(response_object), 204
+
+def mark_customer(id):
+        customer = CustomerManager.retrieve_by_id(id)
+        customer.set_health_status(status = True)
+        CustomerManager.update_customer(customer.id)
+
+        return 200

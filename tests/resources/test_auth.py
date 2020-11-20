@@ -32,14 +32,6 @@ class TestAuth(ViewTest):
         #login for an authority
         self.login_test_authority()
 
-    def test_notifications(self):
-        self.login_test_customer()
-        rv = self.client.get('/notifications', follow_redirects=True)
-        assert rv.status_code == 200
-        self.login_test_operator()
-        rv = self.client.get('/notifications', follow_redirects=True)
-        assert rv.status_code == 200
-
 
 
 
