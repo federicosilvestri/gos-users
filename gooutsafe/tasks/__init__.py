@@ -29,6 +29,10 @@ def check_customer_health_status():
     logger.info('Executing the task <customer_healthcheck>')
     positive_users = CustomerManager.retrieve_all_positive()
 
+    if positive_users is None:
+        # skip computation
+        return
+
     for positive_user in positive_users:
         time_delta = datetime.datetime.utcnow() - positive_user.health_status_change_datetime
 
