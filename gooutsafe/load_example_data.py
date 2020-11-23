@@ -2,9 +2,7 @@ import json
 
 from werkzeug.security import generate_password_hash
 
-import gooutsafe
-
-PATH_HEALTH_AUTH_DATA = 'example_data/health_authority.json'
+PATH_HEALTH_AUTH_DATA = './gooutsafe/example_data/health_authority.json'
 
 
 def load_health_auth_data():
@@ -26,8 +24,3 @@ def load_health_auth_data():
 
     from gooutsafe.dao.health_authority_manager import AuthorityManager
     AuthorityManager.create_authority(lha)
-
-
-if __name__ == "__main__":
-    gooutsafe.create_app()
-    load_health_auth_data()

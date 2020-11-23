@@ -328,6 +328,17 @@ paths:
         default:
           description: Error during the update of the user
 
+  /load_authority:
+    get:
+      tags: [ Health Authority ]
+      description: Create health authority
+      operationId: gooutsafe.resources.users.create_authority
+      responses:
+        200:
+          description: Authority created
+        default:
+          description: An error occured during creation of the health authority
+
           
 components:
   schemas:

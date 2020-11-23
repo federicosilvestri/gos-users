@@ -4,6 +4,7 @@ from gooutsafe.dao.user_manager import UserManager
 from gooutsafe.dao.customer_manager import CustomerManager
 from gooutsafe.models.customer import Customer
 from gooutsafe.models.operator import Operator
+from gooutsafe.load_example_data import load_health_auth_data
 import datetime
 
 
@@ -252,8 +253,18 @@ def add_social_number(id):
         return jsonify(response_object), 204
 
 def mark_customer(id):
-        customer = CustomerManager.retrieve_by_id(id)
-        customer.set_health_status(status = True)
-        CustomerManager.update_customer(customer.id)
+    customer = CustomerManager.retrieve_by_id(id)
+    customer.set_health_status(status = True)
+    CustomerManager.update_customer(customer.id)
 
-        return 200
+    return 200
+
+def create_authority():
+    """Create an health authority
+
+    Returns:
+        response code
+    """
+    load_health_auth_data()
+
+    return 200
