@@ -7,7 +7,6 @@ from .model_test import ModelTest
 
 
 class TestCustomer(ModelTest):
-
     faker = Faker('it_IT')
 
     @classmethod
@@ -18,7 +17,8 @@ class TestCustomer(ModelTest):
 
     def test_cust_init(self):
         for i in range(0, 10):
-            customer, (name, surname, password, email, birthdate, social_number, health_status, phone) = TestCustomer.generate_random_customer()
+            customer, (name, surname, password, email, birthdate, social_number, health_status,
+                       phone) = TestCustomer.generate_random_customer()
 
             self.assertEqual(customer.email, email)
             self.assertEqual(customer.firstname, name)
@@ -45,16 +45,17 @@ class TestCustomer(ModelTest):
 
         from gooutsafe.models import Customer
 
+        complete_name = TestCustomer.faker.name().strip().split(' ')
+        while len(complete_name) != 2:
+            complete_name = TestCustomer.faker.name().strip().split(' ')
 
-        complete_name = TestCustomer.faker.name().split(' ')
-        name, surname = complete_name[::len(complete_name) - 1]
+        name, surname = complete_name
         password = TestCustomer.faker.password()
         email = TestCustomer.faker.email()
         birthdate = TestCustomer.faker.date_of_birth()
         social_number = TestCustomer.faker.ssn()
         health_status = TestCustomer.faker.boolean()
         phone = TestCustomer.faker.phone_number()
-        
 
         customer = Customer(
             firstname=name,
@@ -80,7 +81,7 @@ class TestCustomer(ModelTest):
         social_number = ''.join(['%s' % i for i in range(0, self.customer.Customer.SOCIAL_CODE_LENGTH + 1)])
         with self.assertRaises(ValueError):
             customer.set_social_number(social_number)
-    
+
     def test_valid_phone(self):
         phone = TestCustomer.faker.phone_number()
         customer, _ = TestCustomer.generate_random_customer()

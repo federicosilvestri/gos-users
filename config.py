@@ -2,13 +2,24 @@ class Config(object):
     DEBUG = False
     TESTING = False
 
+    # configuring redis
+    import os
+    REDIS_HOST = os.getenv('REDIS_HOST', 'redis_cache')
+    REDIS_PORT = os.getenv('REDIS_PORT', 6379)
+    REDIS_DB = os.getenv('REDIS_DB', '0')
+    REDIS_URL = 'redis://%s:%s/%s' % (
+        REDIS_HOST,
+        REDIS_PORT,
+        REDIS_DB
+    )
+
 
 class DebugConfig(Config):
     """
     This is the main configuration object for application.
     """
     DEBUG = True
-    TESTING = True
+    TESTING = False
 
     SECRET_KEY = b'isreallynotsecretatall'
 

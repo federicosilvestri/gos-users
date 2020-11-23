@@ -30,7 +30,7 @@ class CustomerManager(Manager):
         return Customer.query.filter_by(phone=phone).first()
             
     @staticmethod
-    def retrieve_all_positive():
+    def retrieve_all_positive() -> [Customer]:
         pos_customers = Customer.query.filter_by(health_status=True).all()
 
         if len(pos_customers) > 0:

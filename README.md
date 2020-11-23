@@ -14,20 +14,14 @@ University of Pisa.
 
 #### Members
 
-|Name and Surname  | Email                         |
-|------------------|-------------------------------|
-|Federico Silvestri|f.silvestri10@studenti.unipi.it|
-|Leonardo Calamita |l.calamita@studenti.unipi.it   |
-|Chiara Boni       |c.boni5@studenti.unipi.it      |
-|Nunzio Lopardo    |n.lopardo@studenti.unipi.it    |
-|Paolo Murgia      |p.murgia1@studenti.unipi.it    |
+|Name and Surname    | Email                         |
+|--------------------|-------------------------------|
+|*Federico Silvestri*|f.silvestri10@studenti.unipi.it|
+|Leonardo Calamita   |l.calamita@studenti.unipi.it   |
+|*Chiara Boni*       |c.boni5@studenti.unipi.it      |
+|Nunzio Lopardo      |n.lopardo@studenti.unipi.it    |
+|*Paolo Murgia*      |p.murgia1@studenti.unipi.it    |
 
-
-## Diagrams
-We have created the Class Diagram using UML to simplify
-and document the project.
-
-[Class Diagram schema](https://app.diagrams.net/#G1fXT6PbLfamFTwbCxVI-jCJrf9b1DjUMB)
 
 ## Instructions
 
@@ -40,18 +34,20 @@ inside the project's root.
 
 `source venv/bin/activate`
 
-`pip install -r requirements.txt`
+`pip install -r requirements.dev.txt`
 
 ### Run the project
 
 To run the project you have to setup the flask environment,
-you can do it by executing the following command:
+you can do it by executing the following commands:
 
-`export FLASK_ENV=<environment-name>`
-
-and now you can run the application
-
-`flask run`
+```shell script
+cp env_file_example env_file
+cp env_file_example .env
+docker-compose up redis
+export FLASK_ENV=development
+flask run
+```
 
 
 #### Application Environments

@@ -28,6 +28,23 @@ def load_health_auth_data():
     AuthorityManager.create_authority(lha)
 
 
+def load_random_customer(n: int):
+    from gooutsafe.dao.customer_manager import CustomerManager
+    from tests.models.test_customer import TestCustomer
+
+    for _ in range(0, n):
+        customer, _ = TestCustomer.generate_random_customer()
+        CustomerManager.create_customer(customer=customer)
+
+    print('Random users added to db')
+
+
 if __name__ == "__main__":
+    import sys
+
     gooutsafe.create_app()
-    load_health_auth_data()
+
+    if len(sys.argv) == 1:
+        load_health_auth_data()
+    elif len(sys.argv) > 2 and sys.argv[1] == 'users':
+        load_random_customer(int(sys.argv[2]))

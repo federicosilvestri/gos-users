@@ -14,9 +14,11 @@ import logging
 db = None
 migrate = None
 debug_toolbar = None
+redis_client = None
 app = None
 api_app = None
 logger = None
+celery = None
 
 
 def create_app():
@@ -56,6 +58,9 @@ def create_app():
     env = Environments(app)
     env.from_object(config_object)
 
+    # creating redis instance
+    create_redis(app)
+
     # loading communications
     import gooutsafe.comm as comm
 
@@ -90,6 +95,50 @@ def create_app():
     return app
 
 
+def create_redis(_app):
+    global redis_client
+
+    # loading redis
+    from flask_redis import FlaskRedis
+
+    if app.config['TESTING']:
+        # loading mockredis
+        from mockredis import MockRedis
+        redis_client = MockRedis(FlaskRedis.from_custom_provider(MockRedis))
+    else:
+        # loading the real redis instance
+        redis_client = FlaskRedis(app)
+
+
+def create_celery(_app):
+    # As celery message broker
+    # we use redis instead of
+    # RabbitMQ
+    global celery
+
+    from celery import Celery
+    celery = Celery(
+        _app.name,
+        broker=_app.config['REDIS_URL'],
+        backend=_app.config['REDIS_URL']
+    )
+
+    celery.conf.timezone = 'Europe/Rome'
+    celery.conf.update(_app.config)
+
+    """
+       Importing the tasks with celery
+       """
+    import gooutsafe.tasks
+
+    class ContextTask(celery.Task):
+        def __call__(self, *args, **kwargs):
+            with _app.app_context():
+                return self.run(*args, **kwargs)
+
+    return celery
+
+
 def init_logger():
     global logger
     """
@@ -116,4 +165,3 @@ def register_specifications(_api_app):
             if file.endswith('.yaml') or file.endswith('.yml'):
                 file_path = folder.joinpath(file)
                 _api_app.add_api(file_path)
-

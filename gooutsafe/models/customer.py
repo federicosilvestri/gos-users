@@ -17,6 +17,7 @@ class Customer(User):
     birthdate = db.Column(db.Date)
     social_number = db.Column(db.Unicode(SOCIAL_CODE_LENGTH), default="")
     health_status = db.Column(db.Boolean, default=False)
+    health_status_change_datetime = db.Column(db.DateTime, default=datetime.utcnow)
     phone = db.Column(db.String(length=MAX_PHONE_LEN))
     last_notification_read_time = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -48,6 +49,8 @@ class Customer(User):
 
     def set_health_status(self, status):
         self.health_status = status
+        if self.health_status:
+            self.health_status_change_datetime = datetime.utcnow()
 
     @staticmethod
     def check_social_number(social_number):

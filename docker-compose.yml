@@ -1,31 +1,10 @@
 version: "3"
 services:
-  worker_base:
-    build: .
-    env_file:
-      - env_file
-    environment:
-      - POSTGRES_HOST=db
-      - RABBIT_MQ_HOST=rabbit_mq
-    command: 'false'
-
-  worker:
-    restart: always
-    extends:
-      service: worker_base
-    command: gunicorn --config gunicorn.conf.py wsgi:app
-    ports:
-    - "5000:5000"
-    depends_on:
-      - db
-      - rabbit_mq
-      - migrations
-
   rabbit_mq:
     image: library/rabbitmq:3.6-management
     ports:
-    - "5672:5672"
-    - "15672:15672"
+      - "5672:5672"
+      - "15672:15672"
     env_file:
       - env_file
 
@@ -35,6 +14,43 @@ services:
     env_file:
       - env_file
 
+  redis_cache:
+    image: library/redis:6.0.9
+    ports:
+      - "6379:6379"
+
+  worker_base:
+    build: .
+    env_file:
+      - env_file
+    environment:
+      - POSTGRES_HOST=db
+      - RABBIT_MQ_HOST=rabbit_mq
+      - REDIS_HOST=redis_cache
+    command: 'false'
+
+  worker:
+    restart: always
+    extends:
+      service: worker_base
+    command: gunicorn --config gunicorn.conf.py wsgi:app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      - rabbit_mq
+      - migrations
+
+  worker_bg:
+    restart: on-failure
+    extends:
+      service: worker_base
+    command: /bin/bash celery_entry.sh
+    depends_on:
+      - db
+      - rabbit_mq
+      - migrations
+
   migrations:
     extends:
       service: worker_base
@@ -43,13 +59,3 @@ services:
     depends_on:
       - db
       - rabbit_mq
-
-#
-#  example_data_loader:
-#    extends:
-#      service: base
-#    env_file:
-#      - env_file
-#    command: python load_example_data.py
-#    depends_on:
-#      - db
