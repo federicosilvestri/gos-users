@@ -111,14 +111,14 @@ paths:
         default:
           description: An error occured during retrieving the user
 
-  /customer_ssn/{customer_ssn}:
+  /user_social_number/{user_ssn}:
     get:
       tags: 
         - Customer
       summary: Get a customer by its ssn
-      operationId: gooutsafe.resources.users.get_customer_by_ssn
+      operationId: gooutsafe.resources.users.get_user_by_ssn
       parameters:
-        - name: customer_ssn
+        - name: user_ssn
           description: Customer Unique SSN
           in: path
           required: true
@@ -132,14 +132,14 @@ paths:
         default:
           description: An error occured during retrieving the user
 
-  /customer_phone/{customer_phone}:
+  /user_phone/{user_phone}:
     get:
       tags: 
         - Customer
       summary: Get a customer by its phone
-      operationId: gooutsafe.resources.users.get_customer_by_phone
+      operationId: gooutsafe.resources.users.get_user_by_phone
       parameters:
-        - name: customer_phone
+        - name: user_phone
           description: Customer phone
           in: path
           required: true
@@ -254,6 +254,26 @@ paths:
         default:
           description: Error during creation of the user
   
+  /mark_positive/{id}:
+    put:
+      summary: Mark customer as positive
+      tags:
+        - Costumer
+      operationId: gooutsafe.resources.users.mark_customer
+      parameters:
+        - name: id
+          description: User Unique ID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Health Status updated
+        default:
+          description: Error during updating of health status
+
   /customer/{id}:
     put:
       summary: Updates the fields for the customer depending on its id
@@ -307,6 +327,17 @@ paths:
           description: Updated
         default:
           description: Error during the update of the user
+
+  /load_authority:
+    get:
+      tags: [ Health Authority ]
+      description: Create health authority
+      operationId: gooutsafe.resources.users.create_authority
+      responses:
+        200:
+          description: Authority created
+        default:
+          description: An error occured during creation of the health authority
 
           
 components:

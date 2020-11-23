@@ -31,44 +31,6 @@ class TestAuth(ViewTest):
         assert json_response['user'] is None
         #login for an authority
         self.login_test_authority()
-    #useless test for user microservice
-    """def test_get_profile_another_customer(self):
-        customer = self.login_test_customer()
-        self.login_test_customer()
-        #redirect to your home page if you try to see a profile of another customer (for privacy)
-        rv = self.client.get('/profile/'+str(customer.id), follow_redirects=True)
-        assert rv.status_code == 200
-
-    def test_get_operator_profile(self):
-        #check your profile
-        operator = self.login_test_operator()
-        rv = self.client.get('operator/'+str(operator.id), follow_redirects=True)
-        assert rv.status_code == 200
-        #try to check profile of another operator(redirect to your home page)
-        self.login_test_operator()
-        rv = self.client.get('operator/'+str(operator.id), follow_redirects=True)
-        assert rv.status_code == 200
-
-    def test_logout(self):
-        self.login_test_customer()
-        rv = self.client.get('/logout',follow_redirects=True)
-        assert rv.status_code == 200
-
-    def test_auth_profile(self):
-        authority = self.login_test_authority()
-        rv = self.client.get('/authority/'+str(authority.id)+"/0", follow_redirects=True)
-        assert rv.status_code == 200
-        self.login_test_authority()
-        rv = self.client.get('/authority/'+str(authority.id)+"/0", follow_redirects=True)
-        assert rv.status_code == 200"""
-
-    def test_notifications(self):
-        self.login_test_customer()
-        rv = self.client.get('/notifications', follow_redirects=True)
-        assert rv.status_code == 200
-        self.login_test_operator()
-        rv = self.client.get('/notifications', follow_redirects=True)
-        assert rv.status_code == 200
 
 
 

@@ -4,6 +4,7 @@ from gooutsafe.dao.user_manager import UserManager
 from gooutsafe.dao.customer_manager import CustomerManager
 from gooutsafe.models.customer import Customer
 from gooutsafe.models.operator import Operator
+from gooutsafe.load_example_data import load_health_auth_data
 import datetime
 
 
@@ -104,15 +105,15 @@ def get_user_by_phone(user_phone):
     :param user_phone: user it
     :return: json response
     """
-    user = UserManager.retrieve_by_phone(user_phone)
+    user = CustomerManager.retrieve_by_phone(user_phone)
     if user is None:
         response = {'status': 'User not present'}
         return jsonify(response), 404
 
     return jsonify(user.serialize()), 200
 
-def get_customer_by_ssn(customer_ssn):
-    """Get a customer by his ssn
+def get_user_by_ssn(user_ssn):
+    """Get a user by his ssn
 
     Args:
         customer_ssn (string)
@@ -120,30 +121,14 @@ def get_customer_by_ssn(customer_ssn):
     Returns:
         json response
     """
-    customer = CustomerManager.retrieve_by_ssn(customer_ssn)
+    customer = CustomerManager.retrieve_by_ssn(user_ssn)
     if customer is None:
         response = {'status': 'Costumer not present'}
         return jsonify(response), 404
 
     return jsonify(customer.serialize()), 200
 
-def get_customer_by_phone(customer_phone):
-    """Get a customer by its phone number
 
-    Args:
-        customer_phone (string)
-
-    Returns:
-        json response
-    """
-    customer = CustomerManager.retrieve_by_phone(customer_phone)
-    if customer is None:
-        response = {'status': 'Costumer not present'}
-        return jsonify(response), 404
-
-    return jsonify(customer.serialize()), 200
-
-#TODO implement function
 def get_all_positive_customers():
     """Get all positive customers
 
@@ -154,7 +139,7 @@ def get_all_positive_customers():
     if pos_customers is None:
         response = {'status': 'No positive customers'}
         return jsonify(response), 404
-        
+
     return jsonify([customer.serialize() for customer in pos_customers]), 200
     
 
@@ -266,3 +251,20 @@ def add_social_number(id):
         }
 
         return jsonify(response_object), 204
+
+def mark_customer(id):
+    customer = CustomerManager.retrieve_by_id(id)
+    customer.set_health_status(status = True)
+    CustomerManager.update_customer(customer.id)
+
+    return 200
+
+def create_authority():
+    """Create an health authority
+
+    Returns:
+        response code
+    """
+    load_health_auth_data()
+
+    return 200
